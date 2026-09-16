@@ -1,0 +1,17 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "SpaceZ-NativePlugins-x64",
+      // 指向 VS2022 Community 的 cl.exe，IntelliSense 会自动带上 MSVC + Windows SDK 的头文件
+      "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+      // 插件根目录作为包含基准，源码里才能写 #include <Core/Add.h>
+      "compilerArgs": ["/std:c++20", "/utf-8", "/EHsc", "/I${workspaceFolder}"],
+      "includePath": ["${workspaceFolder}/**"],
+      "defines": ["_UNICODE", "UNICODE"],
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ]
+}

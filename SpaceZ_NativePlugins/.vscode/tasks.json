@@ -1,0 +1,101 @@
+{
+  // 原生插件的 VSCode 任务。全部转调 tools/build.bat，
+  // 保证「编辑器里 Ctrl+Shift+B」和「命令行跑脚本」走的是同一套编译参数。
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "构建控制台调试版",
+      "detail": "Core + Main -> Main/Debug/SpaceZ_Console.exe（Debug 版，可直接 F5 调试）",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/d",
+        "/c",
+        "${workspaceFolder}\\tools\\build.bat",
+        "console-debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "构建 Unity 插件 (Release)",
+      "detail": "Core + UnityNativePlugins -> Assets/Plugins/x86_64/SpaceZ_NativePlugins.dll",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/d",
+        "/c",
+        "${workspaceFolder}\\tools\\build.bat",
+        "plugin-release"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "构建 Unity 插件 (Debug)",
+      "detail": "同上，调试版 DLL（/MDd + /Zi），会覆盖 Release 产物，用于在 Unity 里跟原生代码",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/d",
+        "/c",
+        "${workspaceFolder}\\tools\\build.bat",
+        "plugin-debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$msvc"
+      ],
+      "group": {
+        "kind": "build"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "清理编译产物",
+      "detail": "删除 Main/Debug 下的 exe / pdb / .obj（保留 Assets/Plugins 里的 DLL）",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/d",
+        "/c",
+        "${workspaceFolder}\\tools\\build.bat",
+        "clean"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}

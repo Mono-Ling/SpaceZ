@@ -1,0 +1,26 @@
+{
+  // 只排除编译中间产物；不要用 **/*.dll 之类的通配，否则 Unity 插件 DLL 也会被藏起来
+  "files.exclude": {
+    "Main/Debug/.obj": true,
+    "Main/Debug/*.pdb": true,
+    "Main/Debug/*.ilk": true,
+    "Main/Debug/*.exp": true,
+    "Main/Debug/*.lib": true
+  },
+  "search.exclude": {
+    "Main/Debug": true
+  },
+  "files.associations": {
+    "*.h": "cpp"
+  },
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.intelliSenseMode": "windows-msvc-x64",
+  "C_Cpp.default.defines": ["_UNICODE", "UNICODE"],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.rulers": [100],
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.cwd": "${workspaceFolder}"
+}

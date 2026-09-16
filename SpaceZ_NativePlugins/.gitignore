@@ -1,0 +1,32 @@
+# ===========================================================================
+#  SpaceZ_NativePlugins —— 原生插件自己的 git 配置
+#  作用范围只有本目录（含子目录），Unity 主仓库的 .gitignore 仍在上层生效。
+#  原则：只提交源码 + 工程配置，屏蔽所有 C++ 编译临时文件。
+# ===========================================================================
+
+# --- 编译输出目录 Main/Debug：只保留占位文件，其余全部忽略 ---
+Main/Debug/*
+!Main/Debug/.gitkeep
+
+# --- 兜底：任何位置意外产生的编译产物 ---
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.idb
+*.iobj
+*.ipdb
+*.res
+*.tlog
+*.log
+*.user
+*.suo
+.vs/
+
+# --- 有意不忽略的东西 ---
+# .vscode/   C++ 工程配置（tasks / launch / c_cpp_properties），必须随源码提交
+# *.dll      DLL 产物在 <UnityProject>/Assets/Plugins/x86_64/，不在本目录内，
+#            属于 Unity 资产，由主仓库统一管理（连它的 .meta 一起提交）
+# 本目录与 Assets 同级，不在 Unity 的资源扫描范围内，因此不会有 .meta 需要处理

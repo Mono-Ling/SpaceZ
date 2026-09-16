@@ -1,0 +1,28 @@
+{
+  // 控制台调试入口：F5 会先自动跑「构建控制台调试版」，然后启动 MSVC 调试器。
+  // 第二个配置用于在 Unity 里单步调试插件正文（需先用「构建 Unity 插件 (Debug)」产出 Debug 版 DLL）。
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "调试控制台程序 (MSVC x64)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/Main/Debug/SpaceZ_Console.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/Main/Debug",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "构建控制台调试版"
+    },
+    {
+      "name": "附加到 Unity (调试原生 DLL)",
+      "type": "cppvsdbg",
+      "request": "attach",
+      "processId": "${command:pickProcess}",
+      // DLL 输出到 Assets\Plugins\x86_64，但它的 pdb 留在 Main\Debug，
+      // 所以符号搜索路径必须显式指过去，否则断点会显示为「未加载符号」。
+      "symbolSearchPath": "${workspaceFolder}/Main/Debug"
+    }
+  ]
+}
