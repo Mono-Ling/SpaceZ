@@ -38,13 +38,13 @@ public class NativeLoader : IDisposable
         {
             if (Handle == IntPtr.Zero)
                 return;
+            loadedLibraries.Remove(Path);
             if (!FreeLibrary(Handle))
             {
                 int err = Marshal.GetLastWin32Error();
                 throw new Exception($"【NativeLoader】FreeLibrary failed, WinErr:{err}");
             }
             Handle = IntPtr.Zero;
-            loadedLibraries.Remove(Path);
         }
     }
     [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -84,7 +84,7 @@ public class NativeLoader : IDisposable
     public void Dispose()
     {
         if(_handle == IntPtr.Zero)
-            throw new Exception("【NativeLoader】Library handle is invalid.");
+            return;
         if(loadedLibraries.TryGetValue(_path, out var lib))
             lib.Unload();
         _handle = IntPtr.Zero;
