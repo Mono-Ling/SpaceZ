@@ -11,8 +11,10 @@ public static class SpaceZ_NativePlugins
     private delegate int AddDelegate(int a, int b);
     private static NativeLoader _nativeLoader;
     private static AddDelegate _add;
-    public static void Initialize()
+    [RunTimeStart(-100)]
+    private static void Initialize()
     {
+        Debug.Log("【SpaceZ_NativePlugins】Native插件初始化");
         if (_nativeLoader != null) return;
         try
         {
@@ -21,12 +23,14 @@ public static class SpaceZ_NativePlugins
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Native插件初始化失败：{ex}");
+            Debug.LogError($"【SpaceZ_NativePlugins】Native插件初始化失败：{ex}");
             _add = null;
         }
     }
-    public static void Uninitialize()
+    [RunTimeEnd(100)]
+    private static void Uninitialize()
     {
+        Debug.Log("【SpaceZ_NativePlugins】Native插件卸载");
         if (_nativeLoader != null)
         {
             _nativeLoader.Dispose();
