@@ -160,16 +160,31 @@ if errorlevel 1 (
 )
 exit /b 0
 
-rem Compile one source directory
+rem Compile one source directory tree
 rem   %1 = source dir (relative to plugin root), %2 = obj dir (relative to plugin root)
-rem   One obj dir per source directory on purpose: Core\Add.cpp and
-rem   UnityNativePlugins\Add.cpp share a base name and would overwrite each other.
+rem   Subdirectories are compiled too -- Core\ now holds Core\Tools and
+rem   Core\SpaceGeomBody -- and each source directory gets its OWN obj directory,
+rem   mirroring the tree: one flat obj dir would let Core\Add.cpp and
+rem   Core\Tools\Add.cpp both write Add.obj.
 :compile
 set "SRC=%~1"
 set "OBJSUB=%~2"
 if not exist "%OBJSUB%" mkdir "%OBJSUB%"
-cl %CFLAGS% %SRC%\*.cpp /Fo%OBJSUB%\ /Fd%OBJSUB%\vc.pdb
-if errorlevel 1 exit /b 1
+if exist "%SRC%\*.cpp" (
+  cl %CFLAGS% %SRC%\*.cpp /Fo%OBJSUB%\ /Fd%OBJSUB%\vc.pdb
+  if errorlevel 1 exit /b 1
+)
+rem %SRC% is expanded when this block is parsed, so the recursion below cannot
+rem corrupt it. Dot-directories are skipped: the obj tree is created INSIDE
+rem Main\Debug (Main\Debug\.obj), which sits in the source tree itself --
+rem descending into it would recurse until the batch stack blows up.
+for /d %%d in ("%SRC%\*") do (
+  set "SUBDIR=%%~nxd"
+  if not "!SUBDIR:~0,1!"=="." (
+    call :compile "%SRC%\%%~nxd" "%OBJSUB%\%%~nxd"
+    if errorlevel 1 exit /b 1
+  )
+)
 exit /b 0
 
 rem Collect the obj list into OBJS
