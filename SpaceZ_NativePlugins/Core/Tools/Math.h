@@ -39,7 +39,7 @@ namespace Core::Math
     template<LessComparable T>
     constexpr T Clamp01(T value)
     {
-        return Clamp(value, T{0.0f}, T{1.0f});
+        return Clamp(value, T{0}, T{1});
     }
     template<LessComparable T>
     requires requires(T a)
@@ -65,15 +65,15 @@ namespace Core::Math
         return Clamp(t - std::floor(t / length) * length, 0.0f, length);
     }
 #pragma region 取整函数
-    int CeilToInt(float f)
+    inline int CeilToInt(float f)
     {
         return static_cast<int>(std::ceil(f));
     }
-    int FloorToInt(float f)
+    inline int FloorToInt(float f)
     {
         return static_cast<int>(std::floor(f));
     }
-    int RoundToInt(float f)
+    inline int RoundToInt(float f)
     {
         return static_cast<int>(std::round(f));
     }
