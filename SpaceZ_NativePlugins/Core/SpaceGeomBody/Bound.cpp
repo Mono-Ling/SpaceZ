@@ -2,7 +2,7 @@
 #include"Core/Tools/Math.h"
 using namespace Core::Math;
 
-namespace Core::SpaceGeomBody
+namespace Core::SpaceZ
 {
     Bound::Bound(const Vector3& center, const Vector3& extents) : center(center)
     {
@@ -16,6 +16,10 @@ namespace Core::SpaceGeomBody
     Vector3 Bound::Min() const{return center - extents;}
     Vector3 Bound::Max() const{return center + extents;}
     float Bound::Volume() const{return extents.x * extents.y * extents.z * 8;}
+    float Bound::SurfaceArea() const
+    {
+        return 2.0f * (extents.x * extents.y + extents.y * extents.z + extents.z * extents.x);
+    }
 
     Bound GetBound(const Vector3& minV, const Vector3& maxV)
     {
@@ -96,7 +100,7 @@ namespace Core::SpaceGeomBody
 namespace Core
 {
     template<>
-    std::string ToString<Core::SpaceGeomBody::Bound>(const Core::SpaceGeomBody::Bound& b)
+    std::string ToString<Core::SpaceZ::Bound>(const Core::SpaceZ::Bound& b)
     {
         return "Center:" + ToString(b.center) + " Extents:" + ToString(b.extents);
     }

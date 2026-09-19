@@ -1,7 +1,7 @@
 #pragma once
 #include"Core/Tools/Vector3.h"
 #include"Core/Tools/Math.h"
-namespace Core::SpaceGeomBody
+namespace Core::SpaceZ
 {
     struct Bound
     {
@@ -13,6 +13,7 @@ namespace Core::SpaceGeomBody
         Vector3 Max() const;
         Vector3 Min() const;
         float Volume() const;
+        float SurfaceArea() const;
     };
 
     Bound operator+(const Bound& a, const Bound& b);
@@ -27,5 +28,5 @@ namespace Core::SpaceGeomBody
 namespace Core
 {
     template<>
-    std::string ToString<Core::SpaceGeomBody::Bound>(const Core::SpaceGeomBody::Bound& b);
+    std::string ToString<Core::SpaceZ::Bound>(const Core::SpaceZ::Bound& b);
 }

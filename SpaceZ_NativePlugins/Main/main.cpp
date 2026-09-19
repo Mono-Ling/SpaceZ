@@ -3,7 +3,7 @@
 #include"Core/SpaceGeomBody/Bound.h"
 #include"Core/Handle/Handle.h"
 using namespace Core;
-using namespace Core::SpaceGeomBody;
+using namespace Core::SpaceZ;
 
 int main()
 {

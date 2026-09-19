@@ -17,7 +17,7 @@ namespace Core::SpaceZ
         bool Equals(const Handle<T>& other) const;
         size_t GetHashCode() const;
 
-        static const Handle NULL_HANDLE;
+        static const Handle null;
     };
 
     using ColliderHandle = Handle<Collider>;

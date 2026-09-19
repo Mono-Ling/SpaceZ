@@ -3,7 +3,7 @@
 namespace Core::SpaceZ
 {
     template<typename T>
-    const Handle<T> Handle<T>::NULL_HANDLE = Handle<T>();
+    const Handle<T> Handle<T>::null = Handle<T>();
 
     template<typename T>
     void Handle<T>::Carry()
