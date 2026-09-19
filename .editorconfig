@@ -1,0 +1,40 @@
+# 本文件为跨编辑器统一的代码风格配置(VSCode / Visual Studio 均内置支持)
+# https://editorconfig.org
+root = true
+
+# 所有文件:换行符 CRLF、编码 UTF-8
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# 与 C++:4 空格缩进
+[*.{cs,cpp,h,hpp,c,cc,cxx}]
+indent_style = space
+indent_size = 4
+
+# C# 命名空间约定:block 级声明(namespace X { }),命名空间下的代码允许顶格书写;
+# 注意:Roslyn 格式化引擎不支持"namespace 内容不缩进",请勿对 C# 触发手动格式化
+# (.vscode/settings.json 已对 [csharp] 关闭 formatOnSave 兜底)
+[*.cs]
+csharp_style_namespace_declarations = block_scoped:silent
+
+# JSON(Unity manifest/asmdef):2 空格缩进
+[*.{json,jsonc}]
+indent_style = space
+indent_size = 2
+
+# CMake 脚本:2 空格缩进
+[{CMakeLists.txt,*.cmake}]
+indent_style = space
+indent_size = 2
+
+# Markdown:保留行尾双空格(软换行语法),不裁剪行尾空白
+[*.md]
+trim_trailing_whitespace = false
+
+# Unity 序列化文件(YAML 格式):4 空格缩进
+[*.{unity,prefab,asset,mat}]
+indent_style = space
+indent_size = 4

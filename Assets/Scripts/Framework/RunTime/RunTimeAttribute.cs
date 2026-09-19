@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace SpaceZ.Framework.RunTime
+{
 public abstract class RunTimeAttribute : Attribute
 {
     public int Order { get; private set; }
@@ -20,4 +22,5 @@ public class RunTimeStartAttribute : RunTimeAttribute
 public class RunTimeEndAttribute : RunTimeAttribute
 {
     public RunTimeEndAttribute(int order = 0) : base(order){}
+}
 }

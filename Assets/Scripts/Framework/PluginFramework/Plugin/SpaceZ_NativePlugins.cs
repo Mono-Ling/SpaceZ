@@ -2,8 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using SpaceZ.Framework.Plugin;
+using SpaceZ.Framework.RunTime;
 using UnityEngine;
 
+namespace SpaceZ.Plugin
+{
 public static class SpaceZ_NativePlugins
 {
     private const string PLUGIN_NAME = nameof(SpaceZ_NativePlugins);
@@ -44,4 +48,5 @@ public static class SpaceZ_NativePlugins
     [DllImport(PLUGIN_NAME, EntryPoint = "Add")]
     public static extern int Add(int a,int b);
 #endif
+}
 }

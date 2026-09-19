@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+namespace SpaceZ.Framework.RunTime
+{
 public static class RunTimeManager
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -69,4 +71,5 @@ public static class RunTimeManager
             }
         }
     }
+}
 }

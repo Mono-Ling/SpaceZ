@@ -2,8 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using SpaceZ.Framework.Plugin;
+using SpaceZ.Framework.RunTime;
 using UnityEngine;
 
+namespace SpaceZ.Plugin
+{
 public static class NativeDebug
 {
 #if UNITY_EDITOR
@@ -75,4 +79,5 @@ public static class NativeDebug
         _injectCallback = null;
     }
 #endif
+}
 }

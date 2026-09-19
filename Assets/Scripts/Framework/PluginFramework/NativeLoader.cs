@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+namespace SpaceZ.Framework.Plugin
+{
 public class NativeLoader : IDisposable
 {
     private class NativeLibrary : IDisposable
@@ -89,4 +91,5 @@ public class NativeLoader : IDisposable
             lib.Unload();
         _handle = IntPtr.Zero;
     }
+}
 }

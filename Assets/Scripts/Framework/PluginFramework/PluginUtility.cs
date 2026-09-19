@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+namespace SpaceZ.Framework.Plugin
+{
 public static class PluginUtility
 {
     public static string Path{get;private set;}
@@ -15,4 +18,5 @@ public static class PluginUtility
     }
     public static string GetDllPath(string pluginName)
     => $"{Path}/{pluginName}.dll";
+}
 }
