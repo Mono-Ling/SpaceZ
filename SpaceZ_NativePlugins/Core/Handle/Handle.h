@@ -1,8 +1,6 @@
 #pragma once
 #include<functional>
 #include<cstddef>
-#include "Core/Collider/Collider.h"
-#include "Core/SpaceObject/SpaceObject.h"
 
 namespace Core::SpaceZ
 {
@@ -19,9 +17,6 @@ namespace Core::SpaceZ
 
         static const Handle null;
     };
-
-    using ColliderHandle = Handle<Collider>;
-    using SpaceObjectHandle = Handle<SpaceObject>;
 
     template <typename T>
     bool operator==(const Handle<T>& a, const Handle<T>& b);

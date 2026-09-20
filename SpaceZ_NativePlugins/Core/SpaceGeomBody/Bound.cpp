@@ -13,6 +13,12 @@ namespace Core::SpaceZ
             Abs(extents.z)
         );
     }
+
+    void Bound::operator=(const Bound& bound)
+    {
+        this->center = bound.center;
+        this->extents = bound.extents;
+    }
     Vector3 Bound::Min() const{return center - extents;}
     Vector3 Bound::Max() const{return center + extents;}
     float Bound::Volume() const{return extents.x * extents.y * extents.z * 8;}

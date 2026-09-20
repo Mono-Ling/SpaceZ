@@ -8,6 +8,7 @@ namespace Core::SpaceZ
     {
     public:
         static constexpr float MULTIPLE = 1.5f;
+        int count = 0;
         BVHNode* left = nullptr;
         BVHNode* right = nullptr;
         BVHNode* parent = nullptr;
@@ -15,12 +16,13 @@ namespace Core::SpaceZ
         BVHNodeObject obj = BVHNodeObject::null;
 
         BVHNode(const Bound& bound) : bound(bound) {}
-        BVHNode(const Bound& bound, BVHNodeObject obj);
+        BVHNode(BVHNodeObject obj);
 
         bool IsLeaf() const;
-        void UpdateBound();
+        void Update();
+        void ClearPtr();
     };
     bool IsIntersect(const BVHNode& a, const BVHNode& b);
-    float MergeSurfaceArea(const BVHNode& a, const BVHNode& b);
+    float MergeCost(const BVHNode* a, const Bound& bound);
     BVHNode* GetBro(BVHNode*& a);
 }

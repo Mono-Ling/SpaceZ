@@ -1,4 +1,5 @@
 #pragma once
+#include"Core/Handle/Handle.h"
 
 namespace Core::SpaceZ
 {
@@ -6,4 +7,5 @@ namespace Core::SpaceZ
     {
 
     };
+    using SpaceObjectHandle = Handle<SpaceObject>;
 }

@@ -1,13 +1,13 @@
 #include"Core/BVH/BVHNode.h"
-
+#include<cfloat>
 namespace Core::SpaceZ
 {
-    BVHNode::BVHNode(const Bound& bound, BVHNodeObject obj) : obj(obj)
+    BVHNode::BVHNode(BVHNodeObject obj) : obj(obj), count(1)
     {
         this->bound = Bound
         (
-            bound.center,
-            bound.extents * MULTIPLE
+            obj.bound.center,
+            obj.bound.extents * MULTIPLE
         );
     }
     bool BVHNode::IsLeaf() const
@@ -16,20 +16,29 @@ namespace Core::SpaceZ
             && this->left == nullptr
             && this->right == nullptr;
     }
-    void BVHNode::UpdateBound()
+    void BVHNode::Update()
     {
         if(this->IsLeaf())
             return;
         this->bound = this->left->bound + this->right->bound;
+        this->count = this->left->count + this->right->count;
+    }
+    void BVHNode::ClearPtr()
+    {
+        parent = nullptr;
+        left = nullptr;
+        right = nullptr;
     }
     bool IsIntersect(const BVHNode& a, const BVHNode& b)
     {
         return IsIntersect(a.bound, b.bound);
     }
-    float MergeSurfaceArea(const BVHNode& a, const BVHNode& b)
+    float MergeCost(const BVHNode* node, const Bound& bound)
     {
-        auto bound = a.bound + b.bound;
-        return bound.SurfaceArea();
+        if(!node)
+            return FLT_MAX;
+        auto p = node->bound + bound;
+        return (p.SurfaceArea() - node->bound.SurfaceArea()) * (node->count + 1);
     }
     BVHNode* GetBro(BVHNode*& a)
     {

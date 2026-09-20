@@ -1,21 +1,117 @@
-#include"Core/BVH/BVHTree.h"
-#include"Core/BVH/BVHNodeObject.h"
-#include<stack>
-#include<cfloat>
+#include "Core/BVH/BVHTree.h"
+#include "Core/BVH/BVHNodeObject.h"
+#include "Core/SpaceGeomBody/Bound.h"
+#include <stack>
+#include <cfloat>
 using namespace std;
 namespace Core::SpaceZ
 {
+    BVHTree::~BVHTree()
+    {
+        Clear();
+    }
+    void BVHTree::Clear()
+    {
+        if (!_root)
+            return;
+        std::stack<std::pair<BVHNode*, bool>> st;
+        st.push({_root, false});
+        while (!st.empty())
+        {
+            auto [node, visited] = st.top();
+            st.pop();
+            if (!visited)
+            {
+                st.push({node, true});
+                if (node->right)
+                    st.push({node->right, false});
+                if (node->left)
+                    st.push({node->left, false});
+            }
+            else
+                delete node;
+        }
+        _root = nullptr;
+    }
+    BVHTreeObject* BVHTree::TryGetObject(const ColliderHandle& handle)
+    {
+        auto it = _objMap.find(handle);
+        if (it == _objMap.end())
+            return nullptr;
+        return &it->second;
+    }
+    bool BVHTree::Insert(const Collider& collider)
+    {
+        auto handle = collider.GetColliderHandle();
+        if (handle == ColliderHandle::null || TryGetObject(handle))
+            return false;
+        BVHNodeObject nodeObj(collider);
+        auto node = new BVHNode(nodeObj);
+        BVHTreeObject treeObj(node, collider.bound);
+
+        InsertNode(node);
+        _objMap.insert({handle, treeObj});
+        return true;
+    }
+    bool BVHTree::Remove(const ColliderHandle& handle)
+    {
+        auto objPtr = TryGetObject(handle);
+        if (!objPtr)
+            return false;
+        auto obj = *objPtr;
+        RemoveNode(obj.currentNode);
+        delete obj.currentNode;
+        _objMap.erase(handle);
+        return true;
+    }
+    void BVHTree::Update(const Collider& colider)
+    {
+        auto handle = colider.GetColliderHandle();
+        auto objPtr = TryGetObject(handle);
+        if (!objPtr)
+            return;
+        auto& obj = *objPtr;
+
+        if (colider.bound == obj.currentBound)
+            return;
+        if (IsContains(obj.currentNode->bound, colider.bound))
+        {
+            obj.currentNode->obj.bound = colider.bound;
+            obj.currentBound = colider.bound;
+            return;
+        }
+        auto node = obj.currentNode;
+        RemoveNode(node);
+        node->ClearPtr();
+        auto bound = colider.bound;
+        node->bound = Bound(bound.center, bound.extents * BVHNode::MULTIPLE);
+        node->obj.bound = colider.bound;
+        obj.currentBound = colider.bound;
+        InsertNode(node);
+    }
+    void BVHTree::InsertNode(BVHNode* node)
+    {
+        if (!node)
+            return;
+        if (!_root)
+        {
+            _root = node;
+            return;
+        }
+        auto bestBro = GetBestBro(node->bound);
+        Merge(bestBro, node);
+    }
     void BVHTree::Merge(BVHNode* before, BVHNode* after)
     {
-        if(!before || !after)
+        if (!before || !after)
             return;
         auto parent = before->parent;
         Bound parentBound = before->bound + after->bound;
         BVHNode* newParent = new BVHNode(parentBound);
 
-        if(!parent)
-            root = newParent;
-        else if(before == parent->left)
+        if (!parent)
+            _root = newParent;
+        else if (before == parent->left)
             parent->left = newParent;
         else
             parent->right = newParent;
@@ -26,77 +122,59 @@ namespace Core::SpaceZ
         after->parent = newParent;
         newParent->parent = parent;
 
-        auto curr = newParent->parent;
-        while(curr)
+        auto curr = newParent;
+        while (curr)
         {
-            curr->UpdateBound();
+            curr->Update();
             curr = curr->parent;
         }
     }
-    void BVHTree::DestroyNode(BVHNode* node)
+    void BVHTree::RemoveNode(BVHNode* node)
     {
-        if(!node)
+        if (!node)
             return;
         auto bro = GetBro(node);
-        if(!bro)
+        if (!bro)
         {
-            delete node;
-            root = nullptr;
+            _root = nullptr;
             return;
         }
         auto parent = node->parent;
         auto grandparent = parent->parent;
-        if(!grandparent)
+        if (!grandparent)
         {
-            root = bro;
+            _root = bro;
+            bro->parent = nullptr;
             delete parent;
-            delete node;
             return;
         }
-        if(parent == grandparent->left)
+        if (parent == grandparent->left)
             grandparent->left = bro;
         else
             grandparent->right = bro;
         bro->parent = grandparent;
         delete parent;
-        delete node;
 
         auto curr = grandparent;
-        while(curr)
+        while (curr)
         {
-            curr->UpdateBound();
+            curr->Update();
             curr = curr->parent;
         }
     }
-    BVHNode* BVHTree::GetBestBro(const BVHNode* after)
+    BVHNode* BVHTree::GetBestBro(const Bound& after)
     {
-        if(!root || !after)
-            return nullptr;
-        stack<BVHNode*> st;
-        st.push(root);
-        BVHNode* bestBro = nullptr;
-        float minSA = FLT_MAX;
-        while (!st.empty())
+        auto curr = _root;
+        while (curr && !curr->IsLeaf())
         {
-            auto curr = st.top();
-            st.pop();
-            if(!curr)
-                continue;
-            float currSA = MergeSurfaceArea(*curr,*after);
-
-            if(currSA > minSA)
-                continue;
-            if(curr->IsLeaf())
-            {
-                bestBro = curr;
-                minSA = currSA;
-            }
-            else
-            {
-                st.push(curr->left);
-                st.push(curr->right);
-            }
+            float currCost = (curr->bound + after).SurfaceArea();
+            auto inheritanceCost = currCost - curr->bound.SurfaceArea();
+            auto costL = MergeCost(curr->left, after) + inheritanceCost;
+            auto costR = MergeCost(curr->right, after) + inheritanceCost;
+            if (costL > currCost && costR > currCost)
+                break;
+            curr = costL > costR ? curr->right : curr->left;
         }
-        return bestBro;
+        return curr;
     }
 }

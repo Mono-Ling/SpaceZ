@@ -1,6 +1,7 @@
 #pragma once
 #include"Core/SpaceGeomBody/Bound.h"
 #include"Core/Handle/Handle.h"
+#include"Core/Collider/Collider.h"
 
 namespace Core::SpaceZ
 {
@@ -10,7 +11,13 @@ namespace Core::SpaceZ
         ColliderHandle colliderHandle;
         SpaceObjectHandle spaceObjHandle;
         BVHNodeObject(Bound bound, ColliderHandle collider, SpaceObjectHandle spaceObj)
-        : bound(bound),colliderHandle(collider),spaceObjHandle(spaceObj) {}
+          : bound(bound),
+            colliderHandle(collider),
+            spaceObjHandle(spaceObj) {}
+        BVHNodeObject(const Collider& colider)
+          : bound(colider.bound),
+            colliderHandle(colider.GetColliderHandle()),
+            spaceObjHandle(colider.GetSpaceObjectHandle()) {}
 
         static const BVHNodeObject null;
     };

@@ -19,6 +19,8 @@ namespace Core::SpaceZ
     {
         if(a == BVHNodeObject::null || b == BVHNodeObject::null)
             return false;
+        if(a.spaceObjHandle == b.spaceObjHandle)
+            return false;
         return IsIntersect(a.bound,b.bound);
     }
 }
