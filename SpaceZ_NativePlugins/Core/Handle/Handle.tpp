@@ -25,6 +25,13 @@ namespace Core::SpaceZ
     }
 
     template <typename T>
+    bool operator<(const Handle<T>& a, const Handle<T>& b)
+    {
+        if(a.generation != b.generation)
+            return a.generation < b.generation;
+        return a.id < b.id;
+    }
+    template <typename T>
     bool operator==(const Handle<T>& a, const Handle<T>& b)
     {
         return a.Equals(b);

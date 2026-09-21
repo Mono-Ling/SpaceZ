@@ -19,6 +19,8 @@ namespace Core::SpaceZ
     };
 
     template <typename T>
+    bool operator<(const Handle<T>& a, const Handle<T>& b);
+    template <typename T>
     bool operator==(const Handle<T>& a, const Handle<T>& b);
     template <typename T>
     bool operator!=(const Handle<T>& a, const Handle<T>& b);

@@ -10,4 +10,8 @@ namespace Core::SpaceZ
     {
         return this->_objHandle;
     }
+    const Bound& Collider::GetBound() const
+    {
+        return this->_bound;
+    }
 }

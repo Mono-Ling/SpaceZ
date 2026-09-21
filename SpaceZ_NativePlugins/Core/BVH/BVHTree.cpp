@@ -2,6 +2,7 @@
 #include "Core/BVH/BVHNodeObject.h"
 #include "Core/SpaceGeomBody/Bound.h"
 #include <stack>
+#include <utility>
 #include <cfloat>
 using namespace std;
 namespace Core::SpaceZ
@@ -32,6 +33,7 @@ namespace Core::SpaceZ
                 delete node;
         }
         _root = nullptr;
+        _objMap.clear();
     }
     BVHTreeObject* BVHTree::TryGetObject(const ColliderHandle& handle)
     {
@@ -47,7 +49,7 @@ namespace Core::SpaceZ
             return false;
         BVHNodeObject nodeObj(collider);
         auto node = new BVHNode(nodeObj);
-        BVHTreeObject treeObj(node, collider.bound);
+        BVHTreeObject treeObj(node, collider.GetBound());
 
         InsertNode(node);
         _objMap.insert({handle, treeObj});
@@ -72,22 +74,85 @@ namespace Core::SpaceZ
             return;
         auto& obj = *objPtr;
 
-        if (colider.bound == obj.currentBound)
+        auto bound = colider.GetBound();
+        if (bound == obj.currentBound)
             return;
-        if (IsContains(obj.currentNode->bound, colider.bound))
+        if (IsContains(obj.currentNode->bound, bound))
         {
-            obj.currentNode->obj.bound = colider.bound;
-            obj.currentBound = colider.bound;
+            obj.currentNode->obj.bound = bound;
+            obj.currentBound = bound;
             return;
         }
         auto node = obj.currentNode;
         RemoveNode(node);
         node->ClearPtr();
-        auto bound = colider.bound;
         node->bound = Bound(bound.center, bound.extents * BVHNode::MULTIPLE);
-        node->obj.bound = colider.bound;
-        obj.currentBound = colider.bound;
+        node->obj.bound = bound;
+        obj.currentBound = bound;
         InsertNode(node);
+    }
+    vector<CollisionPair> BVHTree::GetCollisionPairs() const
+    {
+        vector<CollisionPair> ans;
+        if(!_root || _root->IsLeaf())
+            return ans;
+        stack<BVHNode*> st;
+        st.push(_root);
+        while (!st.empty())
+        {
+            auto node = st.top();
+            st.pop();
+            if (!node || node->IsLeaf())
+                continue;
+            CollectCrossPairs(node->left, node->right, ans);
+            st.push(node->left);
+            st.push(node->right);
+        }
+        return ans;
+    }
+    void BVHTree::CollectCrossPairs(BVHNode* left, BVHNode* right, std::vector<CollisionPair>& ans) const
+    {
+        if(!left || !right || !IsIntersect(*left, *right))
+            return;
+        stack<pair<BVHNode*,BVHNode*>> st;
+        st.push({left, right});
+        while (!st.empty())
+        {
+            auto curr = st.top();
+            st.pop();
+            if(!curr.first || !curr.second)
+                continue;
+            auto a = curr.first;
+            auto b = curr.second;
+            if(!IsIntersect(*a, *b))
+                continue;
+
+            if(a->IsLeaf() && b->IsLeaf())
+            {
+                if(IsIntersect(a->obj, b->obj))
+                    ans.push_back(GetCollisionPair(a->obj, b->obj));
+            }
+            else if(a->IsLeaf() || b->IsLeaf())
+            {
+                if(a->IsLeaf())
+                {
+                    st.push({curr.first, b->left});
+                    st.push({curr.first, b->right});
+                }
+                else
+                {
+                    st.push({a->left, curr.second});
+                    st.push({a->right, curr.second});
+                }
+            }
+            else
+            {
+                st.push({a->left,  b->left});
+                st.push({a->left,  b->right});
+                st.push({a->right, b->left});
+                st.push({a->right, b->right});
+            }
+        }
     }
     void BVHTree::InsertNode(BVHNode* node)
     {

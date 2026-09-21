@@ -8,7 +8,6 @@ namespace Core::SpaceZ
     {
     public:
         static constexpr float MULTIPLE = 1.5f;
-        int count = 0;
         BVHNode* left = nullptr;
         BVHNode* right = nullptr;
         BVHNode* parent = nullptr;

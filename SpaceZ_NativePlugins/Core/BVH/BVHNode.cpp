@@ -2,7 +2,7 @@
 #include<cfloat>
 namespace Core::SpaceZ
 {
-    BVHNode::BVHNode(BVHNodeObject obj) : obj(obj), count(1)
+    BVHNode::BVHNode(BVHNodeObject obj) : obj(obj)
     {
         this->bound = Bound
         (
@@ -21,7 +21,6 @@ namespace Core::SpaceZ
         if(this->IsLeaf())
             return;
         this->bound = this->left->bound + this->right->bound;
-        this->count = this->left->count + this->right->count;
     }
     void BVHNode::ClearPtr()
     {
@@ -38,7 +37,7 @@ namespace Core::SpaceZ
         if(!node)
             return FLT_MAX;
         auto p = node->bound + bound;
-        return (p.SurfaceArea() - node->bound.SurfaceArea()) * (node->count + 1);
+        return (p.SurfaceArea() - node->bound.SurfaceArea());
     }
     BVHNode* GetBro(BVHNode*& a)
     {
