@@ -14,17 +14,12 @@ namespace Core::SpaceZ
         );
     }
 
-    void Bound::operator=(const Bound& bound)
-    {
-        this->center = bound.center;
-        this->extents = bound.extents;
-    }
     Vector3 Bound::Min() const{return center - extents;}
     Vector3 Bound::Max() const{return center + extents;}
     float Bound::Volume() const{return extents.x * extents.y * extents.z * 8;}
     float Bound::SurfaceArea() const
     {
-        return 2.0f * (extents.x * extents.y + extents.y * extents.z + extents.z * extents.x);
+        return 8.0f * (extents.x * extents.y + extents.y * extents.z + extents.z * extents.x);
     }
 
     Bound GetBound(const Vector3& minV, const Vector3& maxV)

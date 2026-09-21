@@ -14,8 +14,6 @@ namespace Core::SpaceZ
         Vector3 Min() const;
         float Volume() const;
         float SurfaceArea() const;
-
-        void operator=(const Bound& bound);
     };
 
     Bound operator+(const Bound& a, const Bound& b);
