@@ -21,6 +21,10 @@ namespace Core
         this->z = vec3.z;
         this->w = 0;
     }
+    Vector4 Vector4::operator-() const
+    {
+        return Vector4(-x, -y, -z, -w);
+    }
 
     Vector4 operator+(const Vector4& a, const Vector4& b)
     {

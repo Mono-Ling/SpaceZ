@@ -16,6 +16,7 @@ namespace Core
         Vector4(Vector3 vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(0) {}
         Vector4(Vector3 vec3, float w) : x(vec3.x), y(vec3.y), z(vec3.z), w(w) {}
 
+        Vector4 operator-() const;
         Vector4 normalized() const;
         float length() const;
         void operator=(const Vector3& vec3);

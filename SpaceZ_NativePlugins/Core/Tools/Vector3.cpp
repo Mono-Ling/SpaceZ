@@ -68,6 +68,10 @@ namespace Core
         );
     }
 
+    Vector3 Vector3::operator-() const
+    {
+        return Vector3(-x, -y, -z);
+    }
     Vector3 Vector3::normalized() const
     {
         return Normalize(*this);
