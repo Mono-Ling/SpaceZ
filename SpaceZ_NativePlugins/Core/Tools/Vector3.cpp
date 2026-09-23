@@ -1,5 +1,6 @@
 #include"Vector3.h"
 #include"Math.h"
+#include<cfloat>
 using namespace Core::Math;
 namespace Core
 {
@@ -88,6 +89,14 @@ namespace Core
             Core::Math::Lerp(a.y,b.y,f),
             Core::Math::Lerp(a.z,b.z,f)
         };
+    }
+    float PlaneToPointDistance(const Vector3& normal, const Vector3& planePoint, const Vector3& targetPoint)
+    {
+        float length = Length(normal);
+        if(length < Epsilon)
+            return FLT_MAX;
+        auto PT = targetPoint - planePoint;
+        return Abs(Dot(normal, PT)) / length;
     }
 
     template<>

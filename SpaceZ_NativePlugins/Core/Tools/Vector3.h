@@ -37,6 +37,7 @@ namespace Core
     Vector3 Normalize(const Vector3& v);
     Vector3 Cross(const Vector3& a, const Vector3& b);
     Vector3 Lerp(const Vector3& a, const Vector3& b, float f);
+    float PlaneToPointDistance(const Vector3& normal, const Vector3& planePoint, const Vector3& targetPoint);
 
     template<>
     std::string ToString<Vector3>(const Vector3& v);

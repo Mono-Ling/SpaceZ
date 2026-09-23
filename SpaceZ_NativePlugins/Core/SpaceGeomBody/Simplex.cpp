@@ -61,7 +61,7 @@ namespace Core::SpaceZ
         if (pointCount != 1)
             return false;
         updateDir = -points[0].second;
-        return Abs(Distance(points[0].second, Vector3::zero)) < Epsilon;
+        return false;
     }
     bool Simplex::LineContainsOrigin(Vector3& updateDir)
     {

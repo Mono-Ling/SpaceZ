@@ -14,6 +14,10 @@ namespace Core::SpaceZ
         void Compact();
         void Add(const Vector3& newPoint);
         Vector3 Newest() const;
+
+        /// @brief 单纯形是否包含原点(GJK)
+        /// @param updateDir 更新方向
+        /// @return 是否包含原点
         bool ContainsOrigin(Vector3& updateDir);
 
     private:
