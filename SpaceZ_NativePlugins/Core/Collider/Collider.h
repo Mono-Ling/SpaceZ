@@ -22,6 +22,7 @@ namespace Core::SpaceZ
         Handle<Collider> GetColliderHandle() const;
         SpaceObjectHandle GetSpaceObjectHandle() const;
         const Bound& GetBound()  const;
+        Vector3 GetCenter() const;
         void UpdateParentTransform(const Transform& parent);
 
         virtual Vector3 Support(const Vector3& dir) const = 0;

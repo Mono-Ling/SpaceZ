@@ -28,6 +28,12 @@ namespace Core
         UpdateLocalMatrix();
         return _worldToLocal;
     }
+    Vector3 Transform::GetPosition() const
+    {
+        Vector4 v(position, 1);
+        v = _parentToWorld * v;
+        return Vector3(v.x, v.y, v.z);
+    }
     void Transform::SetParentTransform(const Transform& parent)
     {
         UpdateLocalMatrix();

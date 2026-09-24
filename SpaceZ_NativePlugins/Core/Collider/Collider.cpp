@@ -14,6 +14,10 @@ namespace Core::SpaceZ
     {
         return this->_bound;
     }
+    Vector3 Collider::GetCenter() const
+    {
+        return _transform.GetPosition();
+    }
     void Collider::UpdateParentTransform(const Transform& parent)
     {
         _transform.SetParentTransform(parent);
