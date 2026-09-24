@@ -22,6 +22,8 @@ namespace Core
         Matrix4x4(Vector4 v1, Vector4 v2, Vector4 v3, Vector4 v4);
         Matrix4x4(const Matrix3x3& m);
 
+        Matrix3x3 ToMatrix3x3() const;
+
         static const Matrix4x4 identity;
     };
     Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);

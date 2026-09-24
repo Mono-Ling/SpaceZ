@@ -46,10 +46,11 @@ namespace Core
         Matrix4x4 GetLocalToWorldMatrix() const;
         Matrix4x4 GetWorldToLocalMatrix() const;
         void SetParentTransform(const Transform& parent);
-        Vector3 PointToWorld(const Vector3& point);
-        Vector3 DirToWorld(const Vector3& dir);
-        Vector3 PointToLocal(const Vector3& point);
-        Vector3 DirToLocal(const Vector3& dir);
+        Vector3 PointToWorld(const Vector3& point) const;
+        Vector3 DirToWorld(const Vector3& dir) const;
+        Vector3 PointToLocal(const Vector3& point) const;
+        Vector3 DirToLocal(const Vector3& dir) const;
+        Vector3 NormalToLocal(const Vector3& normal) const;
     private:
         void UpdateLocalMatrix() const;
     };

@@ -22,7 +22,7 @@ namespace Core::SpaceZ
         return 8.0f * (extents.x * extents.y + extents.y * extents.z + extents.z * extents.x);
     }
 
-    Bound GetBound(const Vector3& minV, const Vector3& maxV)
+    Bound CreateBound(const Vector3& minV, const Vector3& maxV)
     {
         Vector3 realMin
         {
@@ -81,7 +81,7 @@ namespace Core::SpaceZ
             Max(maxA.y, maxB.y),
             Max(maxA.z, maxB.z)
         };
-        return GetBound(min,max);
+        return CreateBound(min,max);
     }
     Bound& operator+=(Bound& a, const Bound& b)
     {

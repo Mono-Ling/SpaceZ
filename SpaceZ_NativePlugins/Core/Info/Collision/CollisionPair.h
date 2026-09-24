@@ -1,5 +1,6 @@
 #pragma once
 #include"Core/Info/Collision/CollisionObjInfo.h"
+#include"Core/Info/Collision/CollisionInfo.h"
 
 namespace Core::SpaceZ
 {
@@ -7,9 +8,13 @@ namespace Core::SpaceZ
     {
         CollisionObjInfo first;
         CollisionObjInfo second;
-        // 碰撞点、法线等
+        CollisionInfo collisionInfo;// first -> second
 
-        CollisionPair(CollisionObjInfo first, CollisionObjInfo second)
-        : first(first), second(second) {}
+        CollisionPair(CollisionObjInfo first, CollisionObjInfo second) : first(first), second(second) {}
+
+        inline void SetCollisionInfo(const CollisionInfo info)
+        {
+            collisionInfo = info;
+        }
     };
 }

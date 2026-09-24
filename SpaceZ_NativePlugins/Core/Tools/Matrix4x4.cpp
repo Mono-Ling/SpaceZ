@@ -34,6 +34,10 @@ namespace Core
         m20 = m3x3.m20; m21 = m3x3.m21; m22 = m3x3.m22; m23 = 0;
         m30 = 0;     m31 = 0;     m32 = 0;     m33 = 1;
     }
+    Matrix3x3 Matrix4x4::ToMatrix3x3() const
+    {
+        return Matrix3x3(Vector3(m00, m10, m20), Vector3(m01, m11, m21), Vector3(m02, m12, m22));
+    }
 
     Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2)
     {

@@ -8,6 +8,12 @@ namespace Core::SpaceZ
     {
     public:
         virtual ~Convex() = default;
-        virtual Vector3 Support(const Vector3& dir, const Transform& transform) = 0;
+
+        inline virtual Vector3 Support(const Vector3& dir, const Transform& transform) const
+        {
+            auto localDir = transform.NormalToLocal(dir);
+            return transform.PointToWorld(SupportLocal(localDir));
+        }
+        virtual Vector3 SupportLocal(const Vector3& localDir) const = 0;
     };
 }

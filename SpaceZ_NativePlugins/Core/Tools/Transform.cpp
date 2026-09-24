@@ -37,31 +37,36 @@ namespace Core
         _worldToParent = parent.GetWorldToLocalMatrix();
         _worldToLocal = _parentToLocal * _worldToParent;
     }
-    Vector3 Transform::PointToWorld(const Vector3& point)
+    Vector3 Transform::PointToWorld(const Vector3& point) const
     {
         UpdateLocalMatrix();
         Vector4 v(point, 1);
         v = _localToWorld * v;
         return Vector3(v.x, v.y , v.z);
     }
-    Vector3 Transform::DirToWorld(const Vector3& dir)
+    Vector3 Transform::DirToWorld(const Vector3& dir) const
     {
         UpdateLocalMatrix();
         auto v = _localToWorld * dir;
         return Vector3(v.x, v.y , v.z);
     }
-    Vector3 Transform::PointToLocal(const Vector3& point)
+    Vector3 Transform::PointToLocal(const Vector3& point) const
     {
         UpdateLocalMatrix();
         Vector4 v(point, 1);
         v = _worldToLocal * v;
         return Vector3(v.x, v.y , v.z);
     }
-    Vector3 Transform::DirToLocal(const Vector3& dir)
+    Vector3 Transform::DirToLocal(const Vector3& dir) const
     {
         UpdateLocalMatrix();
         auto v = _worldToLocal * dir;
         return Vector3(v.x, v.y , v.z);
+    }
+    Vector3 Transform::NormalToLocal(const Vector3& normal) const
+    {
+        UpdateLocalMatrix();
+        return _localToWorld.ToMatrix3x3().Transpose() * normal;
     }
     void Transform::UpdateLocalMatrix() const
     {

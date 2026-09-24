@@ -21,7 +21,7 @@ namespace Core::SpaceZ
     bool operator==(const Bound& a, const Bound& b);
     bool operator!=(const Bound& a, const Bound& b);
 
-    Bound GetBound(const Vector3& minV, const Vector3& maxV);
+    Bound CreateBound(const Vector3& minV, const Vector3& maxV);
     bool IsIntersect(const Bound& a, const Bound& b);
     bool IsContains(const Bound& a, const Bound& b);
 }
