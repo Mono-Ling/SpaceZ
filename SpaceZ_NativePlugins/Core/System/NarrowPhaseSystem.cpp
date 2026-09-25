@@ -66,8 +66,9 @@ namespace Core::SpaceZ
         }
         return false;
     }
-    CollisionInfo NarrowPhaseSystem::EPA(const Collider* first, const Collider* second, const Simplex& simplex)
+    CollisionInfo NarrowPhaseSystem::EPA(const Collider* first, const Collider* second, Simplex& simplex)
     {
+        CompleteSimplex(first, second, simplex);
         Polyhedron polyhedron(simplex);
         Vector3 normal;
         float depth = 0;
@@ -88,5 +89,39 @@ namespace Core::SpaceZ
         if(!first || !second)
             return Vector3::zero;
         return first->Support(dir) - second->Support(-dir);
+    }
+    void CompleteSimplex(const Collider* first, const Collider* second, Simplex& simplex)
+    {
+        simplex.ClearCollineation();
+        if(simplex.pointCount == 1)
+            simplex.Add(GetMinkowskiDiff(first, second, -simplex.points[0].second));
+
+        if(simplex.pointCount == 2)
+        {
+            auto dir = simplex.points[1].second - simplex.points[0].second;
+            auto axis = (Abs(dir.x) < Abs(dir.y) && Abs(dir.x) < Abs(dir.z)) ? Vector3::right :
+                        (Abs(dir.y) < Abs(dir.z) ? Vector3::up : Vector3::forward);
+            auto u = Normalize(Cross(dir, axis));
+            auto v = Normalize(Cross(dir, u));
+            auto support = GetMinkowskiDiff(first, second, u);
+            if(Length(support) < Epsilon)
+                support = GetMinkowskiDiff(first, second, v);
+            simplex.Add(support);
+        }
+
+        if(simplex.pointCount == 3)
+        {
+            auto A = simplex.points[0].second;
+            auto B = simplex.points[1].second;
+            auto C = simplex.points[2].second;
+            auto ABC = Cross(B - A,  C - A);
+
+            Vector3 support;
+            if(Dot(ABC, -A) > 0)
+                support = GetMinkowskiDiff(first, second, ABC);
+            else
+                support = GetMinkowskiDiff(first, second, -ABC);
+            simplex.Add(support);
+        }
     }
 }

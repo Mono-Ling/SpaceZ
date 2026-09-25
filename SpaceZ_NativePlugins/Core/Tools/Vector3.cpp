@@ -46,7 +46,11 @@ namespace Core
     }
     float Length(const Vector3& v)
     {
-        return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+        return sqrtf(SqrLength(v));
+    }
+    float SqrLength(const Vector3& v)
+    {
+        return v.x * v.x + v.y * v.y + v.z * v.z;
     }
     float Distance(const Vector3& a, const Vector3& b)
     {

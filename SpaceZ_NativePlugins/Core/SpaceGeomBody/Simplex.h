@@ -20,6 +20,16 @@ namespace Core::SpaceZ
         /// @return 是否包含原点
         bool ContainsOrigin(Vector3& updateDir);
 
+        /// @brief 是否存在共线顶点
+        /// @param a 共线顶点索引
+        /// @param b 共线顶点索引
+        /// @param c 共线顶点索引
+        /// @return 是否存在共线顶点
+        bool IsCollineation(int& a, int& b, int& c) const;
+
+        /// @brief 共线顶点取直
+        void ClearCollineation();
+
     private:
         /// @brief 点包含原点检测
         /// @param points 点集
@@ -40,5 +50,7 @@ namespace Core::SpaceZ
         /// @param points 点集
         /// @return 是否包含原点
         bool TetrahedronContainsOrigin(Vector3& updateDir);
+
+        void SetPoints(const Vector3 A, const Vector3& B);
     };
 }

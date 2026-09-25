@@ -55,13 +55,75 @@ namespace Core::SpaceZ
         }
         return false;
     }
+    bool Simplex::IsCollineation(int& a, int& b, int& c) const
+    {
+        if(pointCount < 3)
+            return true;
+        for(int i = 0; i < pointCount; i++)
+        {
+            for(int j = i + 1; j < pointCount; j++)
+            {
+                for(int k = j + 1; k < pointCount; k++)
+                {
+                    auto A = points[i].second;
+                    auto B = points[j].second;
+                    auto C = points[k].second;
+
+                    if(Cross(B - A, C - A) != Vector3::zero)
+                        continue;
+                    a = i;
+                    b = j;
+                    c = k;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    void Simplex::ClearCollineation()
+    {
+        if(pointCount < 3)
+            return;
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while (pointCount > 2 && IsCollineation(i, j, k))
+        {
+            pair<bool,Vector3> point = {false, Vector3::zero};
+            if(pointCount == 4)
+            {
+                for(int p = 0; p < pointCount; p++)
+                    if(p != i && p != j && p != k)
+                        point = points[p];
+            }
+            auto A = points[i].second;
+            auto B = points[j].second;
+            auto C = points[k].second;
+            float ABlen = SqrLength(B - A);
+            float AClen = SqrLength(C - A);
+            float BClen = SqrLength(C - B);
+            float maxLen = Max(Max(ABlen, AClen), BClen);
+
+            if(Abs(ABlen - maxLen) < Epsilon)
+                SetPoints(A, B);
+            else if (Abs(AClen - maxLen) < Epsilon)
+                SetPoints(A, C);
+            else
+                SetPoints(B, C);
+            if(point.first)
+            {
+                points[2] = point;
+                pointCount++;
+            }
+        }
+    }
 
     bool Simplex::PointContainsOrigin(Vector3& updateDir)
     {
         if (pointCount != 1)
             return false;
         updateDir = -points[0].second;
-        return false;
+        return Length(updateDir) < Epsilon;
     }
     bool Simplex::LineContainsOrigin(Vector3& updateDir)
     {
@@ -74,8 +136,9 @@ namespace Core::SpaceZ
 
         if (Dot(AB, AO) > 0)
         {
-            updateDir = Cross(Cross(AB, AO), AB);
-            return false;
+            auto cross = Cross(AB, AO);
+            updateDir = Cross(cross, AB);
+            return cross == Vector3::zero && SqrLength(AB) > SqrLength(AO);
         }
         else
         {
@@ -179,6 +242,12 @@ namespace Core::SpaceZ
         auto ADB = Cross(AD, AB);
         auto BCD = Cross(B - D, C - D);
 
+        if(Cross(Cross(ABC, ACD), Cross(ADB, BCD)) == Vector3::zero)
+        {
+            updateDir = ABC;
+            return false;
+        }
+
         // 原点在 ABC 面外侧 → 丢弃D点，保留ABC三角形
         if (Dot(ABC, AO) > Epsilon)
         {
@@ -232,5 +301,15 @@ namespace Core::SpaceZ
             return false;
         }
         return true;
+    }
+
+    void Simplex::SetPoints(const Vector3 A, const Vector3& B)
+    {
+        points[0] = {true, A};
+        points[1] = {true, B};
+        points[2].first = false;
+        points[3].first = false;
+        Compact();
+        pointCount = 2;
     }
 }

@@ -33,6 +33,7 @@ namespace Core
 
     float Dot(const Vector3& a, const Vector3& b);
     float Length(const Vector3& v);
+    float SqrLength(const Vector3& v);
     float Distance(const Vector3& a, const Vector3& b);
     Vector3 Normalize(const Vector3& v);
     Vector3 Cross(const Vector3& a, const Vector3& b);

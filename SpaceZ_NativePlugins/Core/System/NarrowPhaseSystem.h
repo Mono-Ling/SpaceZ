@@ -33,7 +33,8 @@ namespace Core::SpaceZ
     private:
         void CollisionDetection(NarrowPhaseDetectPair& pair);
         bool GJK(const Collider* first, const Collider* second, Simplex& simplex);
-        CollisionInfo EPA(const Collider* first, const Collider* second, const Simplex& simplex);
+        CollisionInfo EPA(const Collider* first, const Collider* second, Simplex& simplex);
     };
     Vector3 GetMinkowskiDiff(const Collider* first, const Collider* second, const Vector3& dir);
+    void CompleteSimplex(const Collider* first, const Collider* second, Simplex& simplex);
 }
