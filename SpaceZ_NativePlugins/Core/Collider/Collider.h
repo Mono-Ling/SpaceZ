@@ -3,6 +3,7 @@
 #include"Core/SpaceGeomBody/Bound.h"
 #include"Core/Tools/Transform.h"
 #include"Core/Info/SynMsg/TransformSynMsg.h"
+#include"Core/SpaceGeomBody/Convex/ConvexTransform.h"
 namespace Core::SpaceZ
 {
     class Collider
@@ -25,6 +26,7 @@ namespace Core::SpaceZ
         void UpdateParentTransform(const Transform& parent);
 
         virtual Vector3 Support(const Vector3& dir) const = 0;
+        virtual ConvexTransform GetConvex() const = 0;
         virtual void UpdateLocalTransform(const TransformSynMsg& syn);
         virtual void UpdateBound();
     };

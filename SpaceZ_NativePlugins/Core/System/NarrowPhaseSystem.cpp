@@ -46,11 +46,9 @@ namespace Core::SpaceZ
         pair.collisionPair.SetCollisionInfo(EPA(pair.first, pair.second, simplex));
     }
 
-    bool NarrowPhaseSystem::GJK(const Collider* first, const Collider* second, Simplex& simplex)
+    bool NarrowPhaseSystem::GJK(const ConvexTransform& first, const ConvexTransform& second, Simplex& simplex)
     {
-        if(!first || !second)
-            return false;
-        Vector3 dir = second->GetCenter() - first->GetCenter();
+        Vector3 dir = second.GetCenter() - first.GetCenter();
         if(Length(dir) < Epsilon)
             dir = Vector3::right;
         Vector3 support = Vector3::zero;
@@ -66,7 +64,7 @@ namespace Core::SpaceZ
         }
         return false;
     }
-    CollisionInfo NarrowPhaseSystem::EPA(const Collider* first, const Collider* second, Simplex& simplex)
+    CollisionInfo NarrowPhaseSystem::EPA(const ConvexTransform& first, const ConvexTransform& second, Simplex& simplex)
     {
         CompleteSimplex(first, second, simplex);
         Polyhedron polyhedron(simplex);
@@ -84,13 +82,11 @@ namespace Core::SpaceZ
         return CollisionInfo(depth, normal.normalized(), support / 2);
     }
 
-    Vector3 GetMinkowskiDiff(const Collider* first, const Collider* second, const Vector3& dir)
+    Vector3 GetMinkowskiDiff(const ConvexTransform& first, const ConvexTransform& second, const Vector3& dir)
     {
-        if(!first || !second)
-            return Vector3::zero;
-        return first->Support(dir) - second->Support(-dir);
+        return first.Support(dir) - second.Support(-dir);
     }
-    void CompleteSimplex(const Collider* first, const Collider* second, Simplex& simplex)
+    void CompleteSimplex(const ConvexTransform& first, const ConvexTransform& second, Simplex& simplex)
     {
         simplex.ClearCollineation();
         if(simplex.pointCount == 1)

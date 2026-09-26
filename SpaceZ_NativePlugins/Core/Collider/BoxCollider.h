@@ -20,5 +20,9 @@ namespace Core::SpaceZ
         {
             return _box.Support(dir, _transform);
         }
+        inline ConvexTransform GetConvex() const override
+        {
+            return ConvexTransform(&_box, &_transform);
+        }
     };
 }

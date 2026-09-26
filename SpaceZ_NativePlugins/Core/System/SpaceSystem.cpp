@@ -124,7 +124,7 @@ namespace Core::SpaceZ
                 continue;
             if(!_colliders.TryGet(p.second.colliderHandle, second) || !second)
                 continue;
-            _narrowPhaseSystem.AddDetectPair(NarrowPhaseDetectPair(first, second, p));
+            _narrowPhaseSystem.AddDetectPair(NarrowPhaseDetectPair(first->GetConvex(), second->GetConvex(), p));
         }
         return _narrowPhaseSystem.GetCollisionPairs();
     }
