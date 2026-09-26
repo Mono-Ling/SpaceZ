@@ -3,17 +3,9 @@
 namespace Core::SpaceZ
 {
     template<typename T>
-    HandleLifeCycle<T>::HandleLifeCycle()
-    {
-        _handleBuffer.push(Handle<T>(0));
-    }
-
-    template<typename T>
-    Handle<T> HandleLifeCycle<T>::CreateHandle(T* ptr)
+    Handle<T> HandleLifeCycle<T>::CreateHandle()
     {
         Handle<T> handle = Handle<T>::null;
-        if(!ptr)
-            return handle;
         if(!_handleBuffer.empty())
         {
             handle = _handleBuffer.front();
@@ -21,11 +13,6 @@ namespace Core::SpaceZ
         }
         else
             handle = Handle<T>(_usedHandleMap.size());
-        auto result =_usedHandleMap.insert({handle, ptr});
-
-        // 冲突覆盖（理论上不存在这种情况）
-        if(!result.second)
-            _usedHandleMap[handle] = ptr;
         return handle;
     }
     template<typename T>
@@ -60,11 +47,15 @@ namespace Core::SpaceZ
         return true;
     }
     template<typename T>
-    const T* HandleLifeCycle<T>::operator[](const Handle<T>& handle)
+    T*& HandleLifeCycle<T>::operator[](const Handle<T>& handle)
     {
-        auto it = _usedHandleMap.find(handle);
-        if(it == _usedHandleMap.end())
-            return nullptr;
-        return it->second;
+        return _usedHandleMap[handle];
+    }
+    template<typename T>
+    template<typename F>
+    void HandleLifeCycle<T>::ForEachUsed(F&& func)
+    {
+        for(auto& item : _usedHandleMap)
+            func(item.first, item.second);
     }
 }

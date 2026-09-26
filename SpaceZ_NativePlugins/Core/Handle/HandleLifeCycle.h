@@ -13,14 +13,16 @@ namespace Core::SpaceZ
         std::unordered_map<Handle<T>, T*> _usedHandleMap;
 
     public:
-        HandleLifeCycle();
+        HandleLifeCycle() = default;
 
-        Handle<T> CreateHandle(T* info);
+        Handle<T> CreateHandle();
         bool Contains(const Handle<T>& handle);
         bool TryGet(const Handle<T>& handle, T*& item);
         void Remove(const Handle<T>& handle);
         bool TryRemove(const Handle<T>& handle);
-        const T* operator[](const Handle<T>& handle);
+        T*& operator[](const Handle<T>& handle);
+        template<typename F>
+        void ForEachUsed(F&& func);
     };
 }
 #include"Core/Handle/HandleLifeCycle.tpp"
