@@ -1,6 +1,7 @@
 #pragma once
 #include"Core/SpaceGeomBody/Convex/Capsule.h"
 #include"Core/Collider/Collider.h"
+#include"Core/Info/SynMsg/CapsuleSynMsg.h"
 
 namespace Core::SpaceZ
 {
@@ -23,6 +24,12 @@ namespace Core::SpaceZ
         inline ConvexTransform GetConvex() const override
         {
             return ConvexTransform(&_capsule, &_transform);
+        }
+
+        inline void SetCapsule(const CapsuleSynMsg& msg)
+        {
+            _capsule.SetCapsule(msg.height, msg.radius);
+            Collider::UpdateBound();
         }
     };
 }

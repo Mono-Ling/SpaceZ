@@ -24,5 +24,11 @@ namespace Core::SpaceZ
         {
             return ConvexTransform(&_sphere, &_transform);
         }
+
+        inline void SetSphere(float radius)
+        {
+            _sphere.SetRadius(radius);
+            Collider::UpdateBound();
+        }
     };
 }

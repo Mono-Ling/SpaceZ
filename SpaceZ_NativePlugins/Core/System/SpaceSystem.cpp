@@ -112,6 +112,30 @@ namespace Core::SpaceZ
                 _dirtyColliderSet.insert(collider);
             }
     }
+    void SpaceSystem::UpdateBoxCollider(const std::pair<ColliderHandle,Vector3>& synMsg)
+    {
+        auto ptr = TryGetCollider<BoxCollider>(synMsg.first);
+        if(!ptr)
+            return;
+        ptr->SetBox(synMsg.second);
+        _dirtyColliderSet.insert(synMsg.first);
+    }
+    void SpaceSystem::UpdateSphereCollider(const std::pair<ColliderHandle,float>& synMsg)
+    {
+        auto ptr = TryGetCollider<SphereCollider>(synMsg.first);
+        if(!ptr)
+            return;
+        ptr->SetSphere(synMsg.second);
+        _dirtyColliderSet.insert(synMsg.first);
+    }
+    void SpaceSystem::UpdateCapsuleCollider(const std::pair<ColliderHandle,CapsuleSynMsg>& synMsg)
+    {
+        auto ptr = TryGetCollider<CapsuleCollider>(synMsg.first);
+        if(!ptr)
+            return;
+        ptr->SetCapsule(synMsg.second);
+        _dirtyColliderSet.insert(synMsg.first);
+    }
     const vector<CollisionPair>& SpaceSystem::GetCollisionPairs()
     {
         auto pairs = _breadthPhaseSystem.GetCollisionPairs();
@@ -142,5 +166,14 @@ namespace Core::SpaceZ
                     _breadthPhaseSystem.Insert(*collider);
         }
         _dirtyColliderSet.clear();
+    }
+
+    template<typename T>
+    T* SpaceSystem::TryGetCollider(const ColliderHandle& handle)
+    {
+        Collider* collider = nullptr;
+        if(!_colliders.TryGet(handle, collider) || !collider)
+            return nullptr;
+        return dynamic_cast<T*>(collider);
     }
 }

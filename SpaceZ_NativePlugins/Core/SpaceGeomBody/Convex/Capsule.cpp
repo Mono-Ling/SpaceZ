@@ -6,8 +6,8 @@ namespace Core::SpaceZ
 {
     void Capsule::SetCapsule(float height, float radius)
     {
-        _height = height;
-        _radius = radius;
+        _height = Abs(height);
+        _radius = Abs(radius);
     }
     Vector3 Capsule::SupportLocal(const Vector3& localDir) const
     {

@@ -1,5 +1,7 @@
 #include"Core/SpaceGeomBody/Convex/Box.h"
+#include"Core/Tools/Math.h"
 
+using namespace Core::Math;
 namespace Core::SpaceZ
 {
     Box::Box()
@@ -8,7 +10,7 @@ namespace Core::SpaceZ
     }
     void Box::SetBox(const Vector3& extents)
     {
-        this->_extents = extents;
+        this->_extents = Vector3(Abs(extents.x), Abs(extents.y), Abs(extents.z));
     }
     Vector3 Box::SupportLocal(const Vector3& localDir) const
     {

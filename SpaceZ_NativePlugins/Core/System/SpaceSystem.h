@@ -5,7 +5,12 @@
 #include"Core/SpaceObject/SpaceObject.h"
 #include"Core/BVH/BVHTree.h"
 #include"Core/System/NarrowPhaseSystem.h"
+
+#include"Core/Info/SynMsg/CapsuleSynMsg.h"
+#include"Core/Info/SynMsg/TransformSynMsg.h"
+
 #include<unordered_set>
+#include<utility>
 
 namespace Core::SpaceZ
 {
@@ -41,7 +46,16 @@ namespace Core::SpaceZ
 
         void UpdateColliderTransform(const ColliderHandle& handle, const TransformSynMsg& msg);
         void UpdateSpaceObjectTransform(const SpaceObjectHandle& handle, const TransformSynMsg& msg);
+
+        void UpdateBoxCollider(const std::pair<ColliderHandle,Vector3>& synMsg);
+        void UpdateSphereCollider(const std::pair<ColliderHandle,float>& synMsg);
+        void UpdateCapsuleCollider(const std::pair<ColliderHandle,CapsuleSynMsg>& synMsg);
+
         const std::vector<CollisionPair>& GetCollisionPairs();
         void SynBreadthPhaseSystem();
+
+        private:
+        template<typename T>
+        T* TryGetCollider(const ColliderHandle& handle);
     };
 }

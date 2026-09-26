@@ -1,6 +1,7 @@
 #pragma once
 #include"Core/Collider/Collider.h"
 #include"Core/SpaceGeomBody/Convex/Box.h"
+#include"Core/Tools/Math.h"
 
 namespace Core::SpaceZ
 {
@@ -23,6 +24,12 @@ namespace Core::SpaceZ
         inline ConvexTransform GetConvex() const override
         {
             return ConvexTransform(&_box, &_transform);
+        }
+
+        inline void SetBox(const Vector3& extents)
+        {
+            _box.SetBox(extents);
+            Collider::UpdateBound();
         }
     };
 }
