@@ -6,10 +6,16 @@ namespace Core::SpaceZ
 {
     template <typename T> struct Handle
     {
-        int id = 0;
+        int id = -1;
         int generation = 0;
-        Handle() : id(-1), generation(0) {}
-        explicit Handle(int id) : id(id), generation(1) {}
+
+        static Handle FromId(int id)
+        {
+            Handle h;
+            h.id = id;
+            h.generation = 1;
+            return h;
+        }
 
         void Carry();
         bool Equals(const Handle<T>& other) const;

@@ -12,7 +12,7 @@ namespace Core::SpaceZ
             _handleBuffer.pop();
         }
         else
-            handle = Handle<T>(_usedHandleMap.size());
+            handle = Handle<T>::FromId(_usedHandleMap.size());
         return handle;
     }
     template<typename T>
