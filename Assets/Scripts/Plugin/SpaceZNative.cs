@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace SpaceZ
 {
-public class SpaceZNative
+public static partial class SpaceZPlugin
 {
     private const string PLUGIN_NAME = "SpaceZ_NativePlugins";
 #if UNITY_EDITOR
@@ -94,29 +94,29 @@ public class SpaceZNative
     [RunTimeEnd(90)]
     private static void StopSpaceSystem() => _stopPlugin?.Invoke();
 
-    public static NativeHandle CreateCollider(ColliderType type, NativeHandle spaceObj)
+    private static NativeHandle CreateCollider(ColliderType type, NativeHandle spaceObj)
     => _createCollider?.Invoke(type, spaceObj) ?? NativeHandle.NULL;
-    public static NativeHandle CreateSpaceObject()
+    private static NativeHandle CreateSpaceObject()
     => _createSpaceObject?.Invoke() ?? NativeHandle.NULL;
-    public static bool DestroyCollider(NativeHandle handle)
+    private static bool DestroyCollider(NativeHandle handle)
     => _destroyCollider?.Invoke(handle) ?? false;
-    public static bool DestroySpaceObject(NativeHandle handle)
+    private static bool DestroySpaceObject(NativeHandle handle)
     => _destroySpaceObject?.Invoke(handle) ?? false;
 
-    public static unsafe void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count)
+    private static unsafe void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count)
     => _updateColliderTransform?.Invoke(msgs, count);
-    public static unsafe void UpdateSpaceObjectTransform(NativeTransformSynMsg* msgs, int count)
+    private static unsafe void UpdateSpaceObjectTransform(NativeTransformSynMsg* msgs, int count)
     => _updateSpaceObjectTransform?.Invoke(msgs, count);
-    public static unsafe void UpdateBoxCollider(NativeBoxColliderSynMsg* msgs, int count)
+    private static unsafe void UpdateBoxCollider(NativeBoxColliderSynMsg* msgs, int count)
     => _updateBoxCollider?.Invoke(msgs, count);
-    public static unsafe void UpdateSphereCollider(NativeSphereColliderSynMsg* msgs, int count)
+    private static unsafe void UpdateSphereCollider(NativeSphereColliderSynMsg* msgs, int count)
     => _updateSphereCollider?.Invoke(msgs, count);
-    public static unsafe void UpdateCapsuleCollider(NativeCapsuleColliderSynMsg* msgs, int count)
+    private static unsafe void UpdateCapsuleCollider(NativeCapsuleColliderSynMsg* msgs, int count)
     => _updateCapsuleCollider?.Invoke(msgs, count);
 
-    public static int GetCollisionPairsCount()
+    private static int GetCollisionPairsCount()
     => _getCollisionPairsCount?.Invoke() ?? -1;
-    public static unsafe void GetCollisionPairs(CollisionPair* buffer, ref int bufferSize)
+    private static unsafe void GetCollisionPairs(CollisionPair* buffer, ref int bufferSize)
     => _getCollisionPairs?.Invoke(buffer, ref bufferSize);
 #else
     [RunTimeStart(-90)]
@@ -129,39 +129,39 @@ public class SpaceZNative
 
 
     [DllImport(PLUGIN_NAME, EntryPoint = "CreateCollider")]
-    public static extern NativeHandle CreateCollider(ColliderType type, NativeHandle spaceObj);
+    private static extern NativeHandle CreateCollider(ColliderType type, NativeHandle spaceObj);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "CreateSpaceObject")]
-    public static extern NativeHandle CreateSpaceObject();
+    private static extern NativeHandle CreateSpaceObject();
 
     [DllImport(PLUGIN_NAME, EntryPoint = "DestroyCollider")]
-    public static extern bool DestroyCollider(NativeHandle handle);
+    private static extern bool DestroyCollider(NativeHandle handle);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "DestroySpaceObject")]
-    public static extern bool DestroySpaceObject(NativeHandle handle);
+    private static extern bool DestroySpaceObject(NativeHandle handle);
 
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateColliderTransform")]
-    public static unsafe extern void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count);
+    private static unsafe extern void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateSpaceObjectTransform")]
-    public static unsafe extern void UpdateSpaceObjectTransform(NativeTransformSynMsg* msgs, int count);
+    private static unsafe extern void UpdateSpaceObjectTransform(NativeTransformSynMsg* msgs, int count);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateBoxCollider")]
-    public static unsafe extern void UpdateBoxCollider(NativeBoxColliderSynMsg* msgs, int count);
+    private static unsafe extern void UpdateBoxCollider(NativeBoxColliderSynMsg* msgs, int count);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateSphereCollider")]
-    public static unsafe extern void UpdateSphereCollider(NativeSphereColliderSynMsg* msgs, int count);
+    private static unsafe extern void UpdateSphereCollider(NativeSphereColliderSynMsg* msgs, int count);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateCapsuleCollider")]
-    public static unsafe extern void UpdateCapsuleCollider(NativeCapsuleColliderSynMsg* msgs, int count);
+    private static unsafe extern void UpdateCapsuleCollider(NativeCapsuleColliderSynMsg* msgs, int count);
 
 
     [DllImport(PLUGIN_NAME, EntryPoint = "GetCollisionPairsCount")]
-    public static extern int GetCollisionPairsCount();
+    private static extern int GetCollisionPairsCount();
 
     [DllImport(PLUGIN_NAME, EntryPoint = "GetCollisionPairs")]
-    public static unsafe extern void GetCollisionPairs(CollisionPair* buffer, ref int bufferSize);
+    private static unsafe extern void GetCollisionPairs(CollisionPair* buffer, ref int bufferSize);
 #endif
 }
 }

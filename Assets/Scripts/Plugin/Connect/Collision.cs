@@ -8,23 +8,23 @@ namespace SpaceZ
     [StructLayout(LayoutKind.Sequential)]
     public struct CollisionObjInfo
     {
-        NativeHandle collider;
-        NativeHandle spaceObject;
+        public NativeHandle collider;
+        public NativeHandle spaceObject;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    struct CollisionInfo
+    public struct CollisionInfo
     {
-        float depth;
-        Vector3 normal;
-        Vector3 point;
+        public float depth;
+        public Vector3 normal;
+        public Vector3 point;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct CollisionPair
     {
-        CollisionObjInfo first;
-        CollisionObjInfo second;
-        CollisionInfo collisionInfo;
+        public CollisionObjInfo first;
+        public CollisionObjInfo second;
+        public CollisionInfo collisionInfo;
     }
 }

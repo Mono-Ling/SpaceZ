@@ -7,8 +7,8 @@ namespace SpaceZ
     [StructLayout(LayoutKind.Sequential)]
     public struct NativeHandle
     {
-        int id;
-        int generation;
+        public int id;
+        public int generation;
         public override bool Equals(object obj)
         {
             if (obj is not NativeHandle handle)

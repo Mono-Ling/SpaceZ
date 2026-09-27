@@ -10,9 +10,5 @@ public class Test : MonoBehaviour
     void Start()
     {
         Debug.Log($"【Test】Add(1,2) = {SpaceZ_NativePlugins.Add(1,2)}");
-
-        var obj = SpaceZNative.CreateSpaceObject();
-        Debug.Log(obj);
-        SpaceZNative.CreateCollider(ColliderType.Box, obj);
     }
 }

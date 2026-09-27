@@ -8,22 +8,22 @@ namespace SpaceZ
     [StructLayout(LayoutKind.Sequential)]
     public struct NativeBoxColliderSynMsg
     {
-        NativeHandle handle;
-        Vector3 extents;
+        public NativeHandle handle;
+        public Vector3 extents;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct NativeSphereColliderSynMsg
     {
-        NativeHandle handle;
-        float radius;
+        public NativeHandle handle;
+        public float radius;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct NativeCapsuleColliderSynMsg
     {
-        NativeHandle handle;
-        float height;
-        float radius;
+        public NativeHandle handle;
+        public float height;
+        public float radius;
     }
 }
