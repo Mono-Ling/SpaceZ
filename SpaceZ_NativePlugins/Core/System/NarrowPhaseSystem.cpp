@@ -15,8 +15,9 @@ namespace Core::SpaceZ
     {
         _detectPairs.push_back(pair);
     }
-    const std::vector<CollisionPair>& NarrowPhaseSystem::GetCollisionPairs()
+    const std::vector<CollisionPair>& NarrowPhaseSystem::UpdateCollisionPairs()
     {
+        _collisionPairs.clear();
         if(_detectPairs.empty())
             return _collisionPairs;
         for(auto& p : _detectPairs)
@@ -27,13 +28,17 @@ namespace Core::SpaceZ
             return p.isCollision;
         });
 
-        _collisionPairs.clear();
+
         for(auto& p : _detectPairs)
             if(p.isCollision)
                 _collisionPairs.push_back(p.collisionPair);
             else
                 break;
 
+        return _collisionPairs;
+    }
+    const vector<CollisionPair>&  NarrowPhaseSystem::GetCollisionPairs()
+    {
         return _collisionPairs;
     }
 

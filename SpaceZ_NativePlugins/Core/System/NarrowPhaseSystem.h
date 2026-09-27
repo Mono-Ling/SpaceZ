@@ -29,7 +29,8 @@ namespace Core::SpaceZ
 
         void Clear();
         void AddDetectPair(const NarrowPhaseDetectPair& pair);
-        const std::vector<CollisionPair>& GetCollisionPairs();
+        const std::vector<CollisionPair>& UpdateCollisionPairs();
+        const std::vector<CollisionPair>&  GetCollisionPairs();
 
     private:
         void CollisionDetection(NarrowPhaseDetectPair& pair);

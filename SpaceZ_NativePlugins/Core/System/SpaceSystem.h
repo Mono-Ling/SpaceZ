@@ -14,7 +14,7 @@
 
 namespace Core::SpaceZ
 {
-    enum class ColliderType
+    enum class ColliderType : int
     {
         /// @brief 盒
         Box,
@@ -36,7 +36,7 @@ namespace Core::SpaceZ
         BVHTree _breadthPhaseSystem;
 
     public:
-        SpaceSystem() = delete;
+        SpaceSystem() = default;
         ~SpaceSystem();
 
         ColliderHandle CreateCollider(ColliderType type, const SpaceObjectHandle& spaceObj);
@@ -51,10 +51,11 @@ namespace Core::SpaceZ
         void UpdateSphereCollider(const std::pair<ColliderHandle,float>& synMsg);
         void UpdateCapsuleCollider(const std::pair<ColliderHandle,CapsuleSynMsg>& synMsg);
 
+        const std::vector<CollisionPair>& UpdateCollisionPairs();
         const std::vector<CollisionPair>& GetCollisionPairs();
         void SynBreadthPhaseSystem();
 
-        private:
+    private:
         template<typename T>
         T* TryGetCollider(const ColliderHandle& handle);
     };

@@ -136,7 +136,7 @@ namespace Core::SpaceZ
         ptr->SetCapsule(synMsg.second);
         _dirtyColliderSet.insert(synMsg.first);
     }
-    const vector<CollisionPair>& SpaceSystem::GetCollisionPairs()
+    const vector<CollisionPair>& SpaceSystem::UpdateCollisionPairs()
     {
         auto pairs = _breadthPhaseSystem.GetCollisionPairs();
         _narrowPhaseSystem.Clear();
@@ -150,6 +150,10 @@ namespace Core::SpaceZ
                 continue;
             _narrowPhaseSystem.AddDetectPair(NarrowPhaseDetectPair(first->GetConvex(), second->GetConvex(), p));
         }
+        return _narrowPhaseSystem.UpdateCollisionPairs();
+    }
+    const vector<CollisionPair>& SpaceSystem::GetCollisionPairs()
+    {
         return _narrowPhaseSystem.GetCollisionPairs();
     }
     void SpaceSystem::SynBreadthPhaseSystem()
