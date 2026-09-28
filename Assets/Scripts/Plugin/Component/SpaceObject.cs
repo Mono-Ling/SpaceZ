@@ -8,6 +8,7 @@ namespace SpaceZ
     public class SpaceObject : MonoBehaviour
     {
         public NativeHandle Handle => _handle;
+        public HashSet<NativeHandle> colliderSet = new();
         private NativeHandle _handle;
         void Awake()
         => _handle = this.Create();

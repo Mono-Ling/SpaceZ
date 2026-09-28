@@ -148,15 +148,13 @@ UpdateSpaceObjectTransform(pair<SpaceObjectHandle,TransformSynMsg>* msgs, int co
     }
 }
 extern "C" void __declspec(dllexport)
-UpdateColliderSpaceObject(pair<ColliderHandle,SpaceObjectHandle>* msgs, int count)
+UpdateColliderSpaceObject(pair<ColliderHandle,SpaceObjectHandle> msgs)
 {
     if(!GetSystemPtrDebug())
         return;
     try
     {
-        for(int i = 0; i < count; i++)
-            spaceSystemPtr->SetColliderSpaceObject(msgs[i].first, msgs[i].second);
-        spaceSystemPtr->SynBreadthPhaseSystem();
+        spaceSystemPtr->SetColliderSpaceObject(msgs.first, msgs.second);
     }
     catch(const std::exception& e)
     {

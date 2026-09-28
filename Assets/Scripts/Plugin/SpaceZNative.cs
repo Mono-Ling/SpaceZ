@@ -21,7 +21,7 @@ public static partial class SpaceZPlugin
     private static DestroyNativeInstance _destroyCollider;
     private static DestroyNativeInstance _destroySpaceObject;
 
-    private static UnsafeAction<NativeColliderSpaceObjectSynMsg,int> _updateColliderSpaceObj;
+    private static ActionFuncPtr<NativeColliderSpaceObjectSynMsg> _updateColliderSpaceObj;
     private static UnsafeAction<NativeTransformSynMsg,int> _updateColliderTransform;
     private static UnsafeAction<NativeTransformSynMsg,int> _updateSpaceObjectTransform;
     private static UnsafeAction<NativeBoxColliderSynMsg,int> _updateBoxCollider;
@@ -107,8 +107,8 @@ public static partial class SpaceZPlugin
     private static bool DestroySpaceObject(NativeHandle handle)
     => _destroySpaceObject?.Invoke(handle) ?? false;
 
-    private static unsafe void UpdateColliderSpaceObject(NativeColliderSpaceObjectSynMsg* msgs, int count)
-    => _updateColliderSpaceObj?.Invoke(msgs, count);
+    private static void UpdateColliderSpaceObject(NativeColliderSpaceObjectSynMsg msgs)
+    => _updateColliderSpaceObj?.Invoke(msgs);
     private static unsafe void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count)
     => _updateColliderTransform?.Invoke(msgs, count);
     private static unsafe void UpdateSpaceObjectTransform(NativeTransformSynMsg* msgs, int count)
@@ -148,7 +148,7 @@ public static partial class SpaceZPlugin
 
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateColliderSpaceObject")]
-    private static unsafe extern void UpdateColliderSpaceObject(NativeColliderSpaceObjectSynMsg* msgs, int count);
+    private static extern void UpdateColliderSpaceObject(NativeColliderSpaceObjectSynMsg msgs);
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateColliderTransform")]
     private static unsafe extern void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count);

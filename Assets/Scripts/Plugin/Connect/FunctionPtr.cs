@@ -17,6 +17,9 @@ public static class FunctionPtr
     public delegate bool DestroyNativeInstance(NativeHandle handle);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void ActionFuncPtr<T>(T value) where T : unmanaged;
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public unsafe delegate void UnsafeAction<T,W>(T* ptr, W arg) where T : unmanaged where W : unmanaged;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

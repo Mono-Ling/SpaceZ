@@ -7,6 +7,7 @@ namespace SpaceZ
     public class SpaceZCollider : MonoBehaviour
     {
         public NativeHandle Handle => _handle;
+        public NativeHandle SpaceObject => _spaceObj;
         protected NativeHandle _handle;
         protected NativeHandle _spaceObj;
 
@@ -18,5 +19,9 @@ namespace SpaceZ
             _spaceObj = obj != null ? obj.Handle : NativeHandle.NULL;
             _handle = this.Create(type, _spaceObj);
         }
+        public void SetHandle(NativeHandle handle)
+        => _handle = handle;
+        public void SetSpaceObject(NativeHandle handle)
+        =>_spaceObj = handle;
     }
 }

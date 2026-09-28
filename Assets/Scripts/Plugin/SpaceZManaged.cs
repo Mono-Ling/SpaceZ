@@ -13,7 +13,6 @@ namespace SpaceZ
         private static Dictionary<NativeHandle, SpaceObject> _spaceObjDic = new();
         private static Dictionary<NativeHandle, SpaceZCollider> _colliderDic = new();
 
-        private static NativeList<NativeColliderSpaceObjectSynMsg> _dirtyColliderSpaceObjList;
         private static NativeList<NativeTransformSynMsg> _dirtySpaceObjectTransformList;
         private static NativeList<NativeTransformSynMsg> _dirtyColliderTransformList; 
 
@@ -27,7 +26,6 @@ namespace SpaceZ
         [RunTimeStart(-90)]
         private static void InitializeManaged()
         {
-            _dirtyColliderSpaceObjList = new(Allocator.Persistent);
             _dirtyColliderTransformList = new(Allocator.Persistent);
             _dirtySpaceObjectTransformList = new(Allocator.Persistent);
 
@@ -44,7 +42,6 @@ namespace SpaceZ
             SpaceZUpdate.RemoveListener(ComponentUpdate);
             LateSpaceZUpdate.RemoveListener(OnLateSpaceZUpdate);
 
-            TryDisposeNativeList(_dirtyColliderSpaceObjList);
             TryDisposeNativeList(_dirtyColliderTransformList);
             TryDisposeNativeList(_dirtySpaceObjectTransformList);
 
@@ -73,7 +70,6 @@ namespace SpaceZ
         {
             unsafe
             {
-                GetReadOnlyPtrAndClear(_dirtyColliderSpaceObjList, UpdateColliderSpaceObject);
                 GetReadOnlyPtrAndClear(_dirtySpaceObjectTransformList, UpdateSpaceObjectTransform);
                 GetReadOnlyPtrAndClear(_dirtyColliderTransformList, UpdateColliderTransform);
 
@@ -123,7 +119,7 @@ namespace SpaceZ
         public static NativeHandle Create(this SpaceZCollider collider, ColliderType type, NativeHandle spaceObj)
         {
             if(collider == null)
-                return NativeHandle.NULL;
+                return NativeHandle.NULL;    
             var handle = CreateCollider(type, spaceObj);
             if(handle == NativeHandle.NULL)
             {
@@ -135,6 +131,9 @@ namespace SpaceZ
                 Debug.LogError($"【SpaceZ Plugin】Collider{handle}冲突");
                 return handle;
             }
+
+            if(_spaceObjDic.TryGetValue(spaceObj, out var obj))
+                obj.colliderSet.Add(handle);
             _colliderDic.Add(handle, collider);
             return handle;
         }
@@ -147,8 +146,15 @@ namespace SpaceZ
                 Debug.LogWarning($"【SpaceZ Plugin】不存在SpaceObject{obj.Handle}");
                 return false;
             }
+
+            if(!DestroySpaceObject(obj.Handle))
+                return false;
+
             _spaceObjDic.Remove(obj.Handle);
-            return DestroySpaceObject(obj.Handle);
+            foreach(var collider in obj.colliderSet)
+                if(DestroyManagedCollider(collider))
+                    DestroyCollider(collider);
+            return true;
         }
         public static bool Destroy(this SpaceZCollider collider)
         {
@@ -156,7 +162,22 @@ namespace SpaceZ
                 return false;
             if(!TryGetCollider(collider.Handle))
                 return false;
-            return DestroyCollider(collider.Handle);
+
+            if(!DestroyCollider(collider.Handle))
+                return false;
+            if(_spaceObjDic.TryGetValue(collider.SpaceObject, out var obj))
+                obj?.colliderSet.Remove(collider.Handle);
+
+            DestroyManagedCollider(collider.Handle);
+            return true;
+        }
+        private static bool DestroyManagedCollider(NativeHandle collider)
+        {
+            if(!TryGetCollider(collider))
+                return false;
+            _colliderDic[collider].SetHandle(NativeHandle.NULL);
+            _colliderDic.Remove(collider);
+            return true;
         }
 #endregion
 
@@ -176,11 +197,26 @@ namespace SpaceZ
                 return;
             _dirtyColliderTransformList.Add(msg);
         }
-        public static void UpdateSpaceObject(this SpaceZCollider collider, NativeColliderSpaceObjectSynMsg spaceObj)
+        /// <summary>
+        /// 更新碰撞体所属空间物体
+        /// 需要先于修改_spaceObj成员前上报
+        /// </summary>
+        /// <param name="collider"></param>
+        /// <param name="spaceObj"></param>
+        public static void UpdateSpaceObject(this SpaceZCollider collider, NativeHandle spaceObj)
         {
             if(!TryGetCollider(collider.Handle))
                 return;
-            _dirtyColliderSpaceObjList.Add(spaceObj);
+            if(spaceObj == collider.SpaceObject)
+                return;
+
+            if(_spaceObjDic.TryGetValue(collider.SpaceObject, out var oldObj))
+                oldObj?.colliderSet.Remove(collider.Handle);
+            if(_spaceObjDic.TryGetValue(spaceObj, out var newObj))
+                newObj?.colliderSet.Add(collider.Handle);
+            collider.SetSpaceObject(spaceObj);
+                
+            UpdateColliderSpaceObject(new(){collider = collider.Handle, spaceObj = spaceObj});
         }
         public static void UpdateBoxCollider(this SpaceZCollider collider, NativeBoxColliderSynMsg msg)
         {
@@ -203,6 +239,8 @@ namespace SpaceZ
 #endregion
         private static bool TryGetCollider(NativeHandle handle)
         {
+            if(handle == NativeHandle.NULL)
+                return false;
             if(!_colliderDic.ContainsKey(handle))
             {
                 Debug.LogWarning($"【SpaceZ Plugin】不存在Collider{handle}");
