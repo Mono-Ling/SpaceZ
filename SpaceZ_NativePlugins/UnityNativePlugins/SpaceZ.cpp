@@ -148,6 +148,26 @@ UpdateSpaceObjectTransform(pair<SpaceObjectHandle,TransformSynMsg>* msgs, int co
     }
 }
 extern "C" void __declspec(dllexport)
+UpdateColliderSpaceObject(pair<ColliderHandle,SpaceObjectHandle>* msgs, int count)
+{
+    if(!GetSystemPtrDebug())
+        return;
+    try
+    {
+        for(int i = 0; i < count; i++)
+            spaceSystemPtr->SetColliderSpaceObject(msgs[i].first, msgs[i].second);
+        spaceSystemPtr->SynBreadthPhaseSystem();
+    }
+    catch(const std::exception& e)
+    {
+        LogError("【SpaceZ Native】碰撞体SpaceObject更新异常" + string(e.what()));
+    }
+    catch (...)
+    {
+        LogError("【SpaceZ Native】碰撞体SpaceObject更新异常Unknown exception");
+    }
+}
+extern "C" void __declspec(dllexport)
 UpdateBoxCollider(pair<ColliderHandle,Vector3>* msgs, int count)
 {
     if(!GetSystemPtrDebug())

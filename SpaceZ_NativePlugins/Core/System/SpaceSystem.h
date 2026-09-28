@@ -44,6 +44,7 @@ namespace Core::SpaceZ
         bool DestroyCollider(const ColliderHandle& handle);
         bool DestroySpaceObject(const SpaceObjectHandle& handle);
 
+        void SetColliderSpaceObject(const ColliderHandle& collider, const SpaceObjectHandle& spaceObj);
         void UpdateColliderTransform(const ColliderHandle& handle, const TransformSynMsg& msg);
         void UpdateSpaceObjectTransform(const SpaceObjectHandle& handle, const TransformSynMsg& msg);
 

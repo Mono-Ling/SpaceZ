@@ -48,7 +48,14 @@ namespace Core::SpaceZ
 
         // 无SpaceObject归属碰撞体允许存在，记为null占位作为静态碰撞体
         if(_spaceObjects.TryGet(spaceObj, obj) && obj)
+        {
             obj->AddCollider(handle);
+            collider->UpdateParentTransform(obj->GetTransform());
+
+            _dirtyColliderSet.insert(handle);
+        }
+        else
+            collider->SetSpaceObject(SpaceObjectHandle::null);
         return handle;
     }
     SpaceObjectHandle SpaceSystem::CreateSpaceObject()
@@ -86,6 +93,32 @@ namespace Core::SpaceZ
             DestroyCollider(collider);
         delete obj;
         return _spaceObjects.TryRemove(handle);
+    }
+    void SpaceSystem::SetColliderSpaceObject(const ColliderHandle& collider, const SpaceObjectHandle& spaceObj)
+    {
+        Collider* colliderPtr = nullptr;
+        if(!_colliders.TryGet(collider, colliderPtr) || !colliderPtr)
+            return;
+        auto oldObj = colliderPtr->GetSpaceObjectHandle();
+        if(oldObj == spaceObj)
+            return;
+        SpaceObject* obj = nullptr;
+        if(_spaceObjects.TryGet(oldObj, obj) && obj)
+            obj->RemoveCollider(collider);
+        obj = nullptr;
+        if(_spaceObjects.TryGet(spaceObj, obj) && obj)
+        {
+            colliderPtr->SetSpaceObject(spaceObj);
+            obj->AddCollider(collider);
+            colliderPtr->UpdateParentTransform(obj->GetTransform());
+        }
+        else
+        {
+            colliderPtr->SetSpaceObject(SpaceObjectHandle::null);
+            colliderPtr->UpdateParentTransform(Transform());
+        }
+
+        _dirtyColliderSet.insert(collider);
     }
     void SpaceSystem::UpdateColliderTransform(const ColliderHandle& handle, const TransformSynMsg& msg)
     {

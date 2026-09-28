@@ -23,6 +23,7 @@ namespace Core::SpaceZ
         SpaceObjectHandle GetSpaceObjectHandle() const;
         const Bound& GetBound()  const;
         Vector3 GetCenter() const;
+        void SetSpaceObject(const SpaceObjectHandle& spaceobj);
         void UpdateParentTransform(const Transform& parent);
 
         virtual Vector3 Support(const Vector3& dir) const = 0;

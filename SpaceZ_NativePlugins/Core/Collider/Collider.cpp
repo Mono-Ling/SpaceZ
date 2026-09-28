@@ -18,6 +18,10 @@ namespace Core::SpaceZ
     {
         return _transform.GetPosition();
     }
+    void Collider::SetSpaceObject(const SpaceObjectHandle& spaceobj)
+    {
+        this->_objHandle = spaceobj;
+    }
     void Collider::UpdateParentTransform(const Transform& parent)
     {
         _transform.SetParentTransform(parent);

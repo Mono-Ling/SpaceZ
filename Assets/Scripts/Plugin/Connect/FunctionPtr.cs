@@ -17,6 +17,9 @@ public static class FunctionPtr
     public delegate bool DestroyNativeInstance(NativeHandle handle);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public unsafe delegate void UpdateColliderSpaceObject(NativeColliderSpaceObjectSynMsg* msgs, int count);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public unsafe delegate void UpdateNativeTransform(NativeTransformSynMsg* msgs, int count);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
