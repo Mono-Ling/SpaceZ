@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using SpaceZ.Framework.Plugin;
 using SpaceZ.Framework.RunTime;
 using UnityEngine;
+using static SpaceZ.FunctionPtr;
 
 namespace SpaceZ
 {
@@ -12,27 +13,27 @@ public static partial class SpaceZPlugin
 {
     private const string PLUGIN_NAME = "SpaceZ_NativePlugins";
 #if UNITY_EDITOR
-    private static FunctionPtr.NativePluginLifeCycle _startPlugin;
-    private static FunctionPtr.NativePluginLifeCycle _stopPlugin;
+    private static NativePluginLifeCycle _startPlugin;
+    private static NativePluginLifeCycle _stopPlugin;
 
-    private static FunctionPtr.CreateCollider _createCollider;
-    private static FunctionPtr.CreateSpaceObject _createSpaceObject;
-    private static FunctionPtr.DestroyNativeInstance _destroyCollider;
-    private static FunctionPtr.DestroyNativeInstance _destroySpaceObject;
+    private static CreateCollider _createCollider;
+    private static CreateSpaceObject _createSpaceObject;
+    private static DestroyNativeInstance _destroyCollider;
+    private static DestroyNativeInstance _destroySpaceObject;
 
-    private static FunctionPtr.UpdateColliderSpaceObject _updateColliderSpaceObj;
-    private static FunctionPtr.UpdateNativeTransform _updateColliderTransform;
-    private static FunctionPtr.UpdateNativeTransform _updateSpaceObjectTransform;
-    private static FunctionPtr.UpdateBoxCollider _updateBoxCollider;
-    private static FunctionPtr.UpdateSphereCollider _updateSphereCollider;
-    private static FunctionPtr.UpdateCapsuleCollider _updateCapsuleCollider;
+    private static UnsafeAction<NativeColliderSpaceObjectSynMsg,int> _updateColliderSpaceObj;
+    private static UnsafeAction<NativeTransformSynMsg,int> _updateColliderTransform;
+    private static UnsafeAction<NativeTransformSynMsg,int> _updateSpaceObjectTransform;
+    private static UnsafeAction<NativeBoxColliderSynMsg,int> _updateBoxCollider;
+    private static UnsafeAction<NativeSphereColliderSynMsg,int> _updateSphereCollider;
+    private static UnsafeAction<NativeCapsuleColliderSynMsg,int> _updateCapsuleCollider;
 
-    private static FunctionPtr.GetCount _getCollisionPairsCount;
-    private static FunctionPtr.GetCollisionPairs _getCollisionPairs;
+    private static GetCount _getCollisionPairsCount;
+    private static GetCollisionPairs _getCollisionPairs;
 
     private static NativeLoader _nativeLoader;
     [RunTimeStart(-100)]
-    private static void Initialize()
+    private static void InitializeNative()
     {
         if(_nativeLoader != null)
             return;
@@ -66,7 +67,7 @@ public static partial class SpaceZPlugin
         Debug.Log("【SpaceZ Native】Native插件加载");
     }
     [RunTimeEnd(100)]
-    private static void Uninitialize()
+    private static void UninitializeNative()
     {
         Debug.Log("【SpaceZ Native】Native插件卸载");
         if (_nativeLoader != null)
@@ -148,7 +149,7 @@ public static partial class SpaceZPlugin
 
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateColliderSpaceObject")]
     private static unsafe extern void UpdateColliderSpaceObject(NativeColliderSpaceObjectSynMsg* msgs, int count);
-    
+
     [DllImport(PLUGIN_NAME, EntryPoint = "UpdateColliderTransform")]
     private static unsafe extern void UpdateColliderTransform(NativeTransformSynMsg* msgs, int count);
 
