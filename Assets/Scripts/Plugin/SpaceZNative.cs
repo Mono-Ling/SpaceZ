@@ -21,12 +21,12 @@ public static partial class SpaceZPlugin
     private static DestroyNativeInstance _destroyCollider;
     private static DestroyNativeInstance _destroySpaceObject;
 
-    private static ActionFuncPtr<NativeColliderSpaceObjectSynMsg> _updateColliderSpaceObj;
-    private static UnsafeAction<NativeTransformSynMsg,int> _updateColliderTransform;
-    private static UnsafeAction<NativeTransformSynMsg,int> _updateSpaceObjectTransform;
-    private static UnsafeAction<NativeBoxColliderSynMsg,int> _updateBoxCollider;
-    private static UnsafeAction<NativeSphereColliderSynMsg,int> _updateSphereCollider;
-    private static UnsafeAction<NativeCapsuleColliderSynMsg,int> _updateCapsuleCollider;
+    private static UpdateColliderSpaceObject _updateColliderSpaceObj;
+    private static UpdateNativeTransform _updateColliderTransform;
+    private static UpdateNativeTransform _updateSpaceObjectTransform;
+    private static UpdateBoxCollider _updateBoxCollider;
+    private static UpdateSphereCollider _updateSphereCollider;
+    private static UpdateCapsuleCollider _updateCapsuleCollider;
 
     private static GetCount _getCollisionPairsCount;
     private static GetCollisionPairs _getCollisionPairs;

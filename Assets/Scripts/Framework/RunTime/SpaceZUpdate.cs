@@ -18,7 +18,6 @@ namespace SpaceZ.Framework.RunTime
             if(Time.realtimeSinceStartup - _preTime < SpaceZTime.FRAME_DELAY)
                 return;
             SpaceZTime.OnFrame();
-            Debug.Log(SpaceZTime.deltaTime);
             try
             {
                 _update?.Invoke();
