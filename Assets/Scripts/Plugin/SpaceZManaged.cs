@@ -20,9 +20,12 @@ namespace SpaceZ
         private static NativeList<NativeSphereColliderSynMsg> _dirtySphereColliderList;
         private static NativeList<NativeCapsuleColliderSynMsg> _dirtyCapsuleColliderList;
 
+        private static NativeList<CollisionPair> _collisionPairBuffer;
+        private static CollisionCallbackBuffer _collisionCallback = new();
 
         private static List<ISpaceZUpdate> _tempUpdateList = new();
 
+#region 托管引擎更新
         [RunTimeStart(-90)]
         private static void InitializeManaged()
         {
@@ -32,6 +35,8 @@ namespace SpaceZ
             _dirtyBoxColliderList = new(Allocator.Persistent);
             _dirtySphereColliderList = new(Allocator.Persistent);
             _dirtyCapsuleColliderList = new(Allocator.Persistent);
+
+            _collisionPairBuffer = new(Allocator.Persistent);
 
             SpaceZUpdate.AddListener(ComponentUpdate);
             LateSpaceZUpdate.AddListener(OnLateSpaceZUpdate);
@@ -48,10 +53,13 @@ namespace SpaceZ
             TryDisposeNativeList(_dirtyBoxColliderList);
             TryDisposeNativeList(_dirtySphereColliderList);
             TryDisposeNativeList(_dirtyCapsuleColliderList);
+
+            TryDisposeNativeList(_collisionPairBuffer);
         }
         private static void OnLateSpaceZUpdate()
         {
             SynDirtyData();
+            UpdateCollisionPairs();
         }
         private static void ComponentUpdate()
         {
@@ -78,6 +86,68 @@ namespace SpaceZ
                 GetReadOnlyPtrAndClear(_dirtyCapsuleColliderList, UpdateCapsuleCollider);
             }
         }
+        private static void UpdateCollisionPairs()
+        {
+            int count = GetCollisionPairsCount();
+            if(count < 0)
+            {
+                Debug.LogError("【SpaceZ Plugin】碰撞对数量获取异常");
+                return;
+            }
+            _collisionPairBuffer.Clear();
+            _collisionPairBuffer.Length = count;
+            if(count > 0)
+            {
+                unsafe
+                {
+                    var ptr = _collisionPairBuffer.GetUnsafePtr();
+                    GetCollisionPairs(ptr, ref count);
+                }
+            }
+            _collisionCallback.ResetVisible();
+            for(int i = 0; i < count; i++)
+            {
+                var collisionInfo = _collisionPairBuffer[i].collisionInfo;
+                var callbackInfos = CollisionCallbackInfo.From(_collisionPairBuffer[i]);
+
+                if(callbackInfos.Item1.collisionCollider == NativeHandle.NULL
+                || callbackInfos.Item2.collisionCollider == NativeHandle.NULL)
+                    continue;
+
+                SpaceObject obj = null;
+                if(_spaceObjDic.TryGetValue(callbackInfos.Item1.collisionObj, out obj))
+                    _collisionCallback.SetVisible(callbackInfos.Item1, obj, collisionInfo);
+                
+                collisionInfo.normal = -collisionInfo.normal;
+
+                if(_spaceObjDic.TryGetValue(callbackInfos.Item2.collisionObj, out obj))
+                    _collisionCallback.SetVisible(callbackInfos.Item2, obj, collisionInfo);
+            }
+            _collisionCallback.ClearNotVisible();
+
+            foreach(var item in _collisionCallback.CollisionEnterList)
+                if(_colliderDic.TryGetValue(item.collisionCollider, out var collider))
+                    if(_collisionCallback.SpaceObjectCallbackDic.TryGetValue(item.spaceObj, out var value))
+                        foreach(var callback in value.callbacks)
+                            callback?.OnCollisionEnter(collider, item.collisionInfo);
+
+            foreach(var item in _collisionCallback.CollisionStayList)
+                if(_colliderDic.TryGetValue(item.collisionCollider, out var collider))
+                    if(_collisionCallback.SpaceObjectCallbackDic.TryGetValue(item.spaceObj, out var value))
+                        foreach(var callback in value.callbacks)
+                            callback?.OnCollisionStay(collider, item.collisionInfo);
+
+            foreach(var item in _collisionCallback.CollisionExitList)
+            {
+                SpaceZCollider collider = null;
+                if(!_colliderDic.TryGetValue(item.collisionCollider, out collider))
+                    collider = null;
+                if(_collisionCallback.SpaceObjectCallbackDic.TryGetValue(item.spaceObj, out var value))
+                    foreach(var callback in value.callbacks)
+                        callback?.OnCollisionExit(collider, item.collisionInfo);
+            }
+            _collisionCallback.ClearSpaceObjectCallbackDic();
+        }
 
         private static void GetReadOnlyPtrAndClear<T>(NativeList<T> list, UnsafeAction<T,int> action) where T : unmanaged
         {
@@ -97,6 +167,8 @@ namespace SpaceZ
             list.Dispose();
             return true;
         }
+#endregion
+
 #region 组件生命周期
         public static NativeHandle Create(this SpaceObject obj)
         {
