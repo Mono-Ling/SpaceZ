@@ -15,14 +15,7 @@ namespace SpaceZ
         protected Transform _spaceObjTransform;
 
         protected virtual void OnTransformParentChanged()
-        {
-            var obj = transform.GetComponentInParent<SpaceObject>(true);
-            var curr = obj?.Handle ?? NativeHandle.NULL;
-            if(curr != _spaceObj)
-                this.UpdateSpaceObject(curr);
-            _spaceObjTransform = obj?.transform ?? null;
-            _spaceObj = curr;
-        }
+        => TryUpdateSpaceObject();
         public virtual void SpaceZUpdate()
         {
             NativeTransformSynMsg curr = new();
@@ -59,5 +52,14 @@ namespace SpaceZ
         => _handle = handle;
         public void SetSpaceObject(NativeHandle handle)
         =>_spaceObj = handle;
+        public void TryUpdateSpaceObject()
+        {
+            var obj = transform.GetComponentInParent<SpaceObject>(true);
+            var curr = obj?.Handle ?? NativeHandle.NULL;
+            if(curr != _spaceObj)
+                this.UpdateSpaceObject(curr);
+            _spaceObjTransform = obj?.transform ?? null;
+            _spaceObj = curr;
+        }
     }
 }

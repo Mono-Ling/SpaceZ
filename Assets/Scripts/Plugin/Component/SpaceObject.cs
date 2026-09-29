@@ -14,7 +14,14 @@ namespace SpaceZ
         protected NativeTransformSynMsg _preTransform;
 
         void Awake()
-        => _handle = this.Create();
+        {
+            _handle = this.Create();
+
+            var colliders = GetComponentsInChildren<SpaceZCollider>();
+            foreach(var collider in colliders)
+                if(collider.Handle != NativeHandle.NULL)
+                    collider.TryUpdateSpaceObject();
+        }
         public void SpaceZUpdate()
         {
             NativeTransformSynMsg curr = new()
