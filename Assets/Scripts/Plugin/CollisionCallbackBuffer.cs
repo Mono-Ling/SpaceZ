@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SpaceZ
@@ -67,7 +68,7 @@ namespace SpaceZ
             _collisionEnterList.Clear();
             _collisionStayList.Clear();
             _collisionExitList.Clear();
-            foreach(var pair in _callbackDic)
+            foreach(var pair in _callbackDic.ToArray())
             {
                 var item = pair.Value;
                 item.visible = false;

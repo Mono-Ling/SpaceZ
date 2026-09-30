@@ -7,8 +7,8 @@ namespace SpaceZ
 {
     public interface IOnCollision
     {
-        void OnCollisionEnter(SpaceZCollider collider, CollisionInfo info);
-        void OnCollisionStay(SpaceZCollider collider, CollisionInfo info);
-        void OnCollisionExit(SpaceZCollider collider, CollisionInfo info);
+        void OnSpaceZCollisionEnter(SpaceZCollider collider, CollisionInfo info);
+        void OnSpaceZCollisionStay(SpaceZCollider collider, CollisionInfo info);
+        void OnSpaceZCollisionExit(SpaceZCollider collider, CollisionInfo info);
     }
 }

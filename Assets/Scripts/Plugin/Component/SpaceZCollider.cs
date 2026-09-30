@@ -8,7 +8,7 @@ namespace SpaceZ
     {
         public NativeHandle Handle => _handle;
         public NativeHandle SpaceObject => _spaceObj;
-        protected NativeHandle _handle;
+        protected NativeHandle _handle = NativeHandle.NULL;
         protected NativeHandle _spaceObj;
 
         protected NativeTransformSynMsg _preTransform;
@@ -47,6 +47,7 @@ namespace SpaceZ
             _spaceObj = obj?.Handle ?? NativeHandle.NULL;
             _spaceObjTransform = obj?.transform ?? null;
             _handle = this.Create(type, _spaceObj);
+            Debug.Log($"【SpaceZ碰撞体】创建句柄{_handle}", this);
         }
         public void SetHandle(NativeHandle handle)
         => _handle = handle;

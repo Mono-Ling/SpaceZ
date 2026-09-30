@@ -129,13 +129,13 @@ namespace SpaceZ
                 if(_colliderDic.TryGetValue(item.collisionCollider, out var collider))
                     if(_collisionCallback.SpaceObjectCallbackDic.TryGetValue(item.spaceObj, out var value))
                         foreach(var callback in value.callbacks)
-                            callback?.OnCollisionEnter(collider, item.collisionInfo);
+                            callback?.OnSpaceZCollisionEnter(collider, item.collisionInfo);
 
             foreach(var item in _collisionCallback.CollisionStayList)
                 if(_colliderDic.TryGetValue(item.collisionCollider, out var collider))
                     if(_collisionCallback.SpaceObjectCallbackDic.TryGetValue(item.spaceObj, out var value))
                         foreach(var callback in value.callbacks)
-                            callback?.OnCollisionStay(collider, item.collisionInfo);
+                            callback?.OnSpaceZCollisionStay(collider, item.collisionInfo);
 
             foreach(var item in _collisionCallback.CollisionExitList)
             {
@@ -144,7 +144,7 @@ namespace SpaceZ
                     collider = null;
                 if(_collisionCallback.SpaceObjectCallbackDic.TryGetValue(item.spaceObj, out var value))
                     foreach(var callback in value.callbacks)
-                        callback?.OnCollisionExit(collider, item.collisionInfo);
+                        callback?.OnSpaceZCollisionExit(collider, item.collisionInfo);
             }
             _collisionCallback.ClearSpaceObjectCallbackDic();
         }
@@ -290,23 +290,23 @@ namespace SpaceZ
                 
             UpdateColliderSpaceObject(new(){collider = collider.Handle, spaceObj = spaceObj});
         }
-        public static void UpdateBoxCollider(this SpaceZCollider collider, NativeBoxColliderSynMsg msg)
+        public static void UpdateBoxCollider(this SpaceZCollider collider, Vector3 extents)
         {
             if(!TryGetCollider(collider.Handle))
                 return;
-            _dirtyBoxColliderList.Add(msg);
+            _dirtyBoxColliderList.Add(new(){handle = collider.Handle, extents = extents});
         }
-        public static void UpdateSphereCollider(this SpaceZCollider collider, NativeSphereColliderSynMsg msg)
+        public static void UpdateSphereCollider(this SpaceZCollider collider, float radius)
         {
             if(!TryGetCollider(collider.Handle))
                 return;
-            _dirtySphereColliderList.Add(msg);
+            _dirtySphereColliderList.Add(new(){handle = collider.Handle, radius = radius});
         }
-        public static void UpdateCapsuleCollider(this SpaceZCollider collider, NativeCapsuleColliderSynMsg msg)
+        public static void UpdateCapsuleCollider(this SpaceZCollider collider, float height, float radius)
         {
             if(!TryGetCollider(collider.Handle))
                 return;
-            _dirtyCapsuleColliderList.Add(msg);
+            _dirtyCapsuleColliderList.Add(new(){handle = collider.Handle, height = height, radius = radius});
         }
 #endregion
         private static bool TryGetCollider(NativeHandle handle)
